@@ -12,7 +12,7 @@ const AdminPanel = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const res = await axios.get('/api/admin/submitted-articles');
+      const res = await axios.get(`https://ministry-new.onrender.com/api/admin/submitted-articles`);
       setArticles(res.data);
     } catch (err) {
       console.error('Error fetching submissions:', err);
@@ -20,12 +20,12 @@ const AdminPanel = () => {
   };
 
   const handleApprove = async (id) => {
-    await axios.patch(`/api/admin/approve-article/${id}`);
+    await axios.patch(`https://ministry-new.onrender.com/api/admin/approve-article/${id}`);
     fetchSubmissions();
   };
 
   const handleReject = async (id) => {
-    await axios.delete(`/api/admin/reject-article/${id}`);
+    await axios.delete(`https://ministry-new.onrender.com/api/admin/reject-article/${id}`);
     fetchSubmissions();
   };
 
