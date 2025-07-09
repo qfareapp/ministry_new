@@ -11,7 +11,7 @@ const AdminLogin = ({ setUser }) => {
     e.preventDefault();
     console.log("Sending login:", email, password);
     try {
-      const res = await axios.post("/api/admin/login", {
+      const res = await axios.post("https://ministry-new.onrender.com/api/admin/login", {
         email,
         password,
       });
