@@ -26,7 +26,7 @@ const AdminForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/articles", formData);
+      await axios.post("https://ministry-new.onrender.com/api/articles", formData);
       setSuccess(true);
       setFormData({
         title: "",

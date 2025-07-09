@@ -22,12 +22,12 @@ const articleUrl = `${window.location.origin}/article/${id}`;
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/articles/${id}`);
+      const res = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}`);
       setArticle(res.data);
       setLikes(res.data.likes || 0);
       setShares(res.data.shares || 0);
 
-      const commentRes = await axios.get(`http://localhost:5000/api/articles/${id}/comments`);
+      const commentRes = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}/comments`);
       setComments(commentRes.data || []);
 
       const currentUserId = user?._id || localStorage.getItem("guestUserId");
@@ -60,7 +60,7 @@ useEffect(() => {
     const hasShared = sessionStorage.getItem(`shared-${id}`);
     if (!hasShared && user) {
       axios
-        .post(`http://localhost:5000/api/articles/${id}/share`, {
+        .post(`https://ministry-new.onrender.com/${id}/share`, {
           userId: user.id,
         })
         .then(() => {
@@ -89,7 +89,7 @@ const handleLike = async () => {
 
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/articles/${id}/like`,
+      `https://ministry-new.onrender.com/api/articles/${id}/like`,
       { userId }
     );
     setLikes(response.data.likes);
@@ -111,7 +111,7 @@ const handleLike = async () => {
       return;
     }
 
-    await axios.post(`http://localhost:5000/api/articles/${id}/share`, { userId: user.id });
+    await axios.post(`https://ministry-new.onrender.com/api/articles/${id}/share`, { userId: user.id });
     setShares((prev) => prev + 1);
   };
 
@@ -119,7 +119,7 @@ const handleLike = async () => {
     e.preventDefault();
     if (!user || !newComment.trim()) return;
 
-    const res = await axios.post(`http://localhost:5000/api/articles/${id}/comment`, {
+    const res = await axios.post(`https://ministry-new.onrender.com/api/articles/${id}/comment`, {
       userId: user.id,
       userName: user.name,
       text: newComment,

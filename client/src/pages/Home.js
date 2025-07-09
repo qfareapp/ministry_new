@@ -10,8 +10,7 @@ const Home = ({ user }) => {
    
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/articles")
+    axios.get("https://ministry-new.onrender.com/api/articles")
       .then((res) => setArticles(res.data))
       .catch((err) => console.error(err));
   }, []);

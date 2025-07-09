@@ -23,7 +23,7 @@ const EditArticle = () => {
     if (!id) return;
 
     axios
-      .get(`http://localhost:5000/api/articles/${id}`)
+      .get(`https://ministry-new.onrender.com/api/articles/${id}`)
       .then((res) => {
         setArticle(res.data);
         setLoading(false);
@@ -42,7 +42,7 @@ const EditArticle = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`http://localhost:5000/api/articles/${id}`, article);
+      await axios.patch(`https://ministry-new.onrender.com/api/articles/${id}`, article);
       navigate("/");
     } catch (err) {
       console.error("❌ Error updating article:", err);
