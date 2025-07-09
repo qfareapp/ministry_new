@@ -46,7 +46,7 @@ const articleUrl = `${window.location.origin}/article/${id}`;
   }
 
   fetchData();
-  axios.get("http://localhost:5000/api/articles")
+  axios.get(`https://ministry-new.onrender.com/api/articles/${id}`)
   .then((res) => {
     const others = res.data.filter((a) => a._id !== id);
     setMoreArticles(others.slice(0, 4));

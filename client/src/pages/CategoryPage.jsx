@@ -12,7 +12,7 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchByCategory = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/articles");
+        const res = await axios.get("https://ministry-new.onrender.com/api/articles");
 
         const filtered = res.data.filter(
           (article) =>
