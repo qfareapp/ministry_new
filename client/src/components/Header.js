@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 
-const Header = ({ user, setUser, toggleSidebar }) => {  
-  const [menuOpen, setMenuOpen] = useState(false);
-
+const Header = ({ user, setUser, toggleSidebar }) => {
   const handleLogout = async () => {
     await auth.signOut();
     localStorage.removeItem("token");
@@ -15,29 +13,25 @@ const Header = ({ user, setUser, toggleSidebar }) => {
   return (
     <header className="w-full bg-red-600 shadow-md px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Left: Logo + Title */}
+        {/* ✅ LOGO + TITLE */}
         <div className="flex items-center space-x-3">
-           {/* ✅ ADDED: Sidebar toggle button (hamburger icon) */}
-          <button 
-            onClick={toggleSidebar} 
-            className="text-white text-2xl mr-2 sm:hidden"  // ✅ ADDED: hidden on larger screens
+          {/* ✅ Sidebar toggle for category (☰) on mobile */}
+          <button
+            onClick={toggleSidebar}
+            className="text-white text-2xl mr-2 sm:hidden"
           >
             ☰
           </button>
-          <img src="/assets/puzzle.png" alt="Logo" className="h-10 w-10" />
-          <h1 className="text-xl sm:text-2xl font-bold text-white whitespace-nowrap">
+
+          <img src="/assets/logo 2.png" alt="Logo" className="h-10 w-10" />
+
+          {/* ✅ Title visible only on desktop */}
+          <h1 className="hidden sm:inline text-xl sm:text-2xl font-bold text-white whitespace-nowrap">
             Ministry of Missed Opportunities
           </h1>
         </div>
 
-        {/* Mobile Hamburger for dropdown menu */}
-        <div className="md:hidden">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
-            ⋮  {/* ✅ UPDATED: vertical dots for dropdown menu (separate from sidebar toggle) */}
-          </button>
-        </div>
-
-        {/* Desktop Nav + Auth */}
+        {/* ✅ Desktop nav */}
         <div className="hidden md:flex items-center space-x-6 text-white text-sm font-medium">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About</Link>
@@ -64,36 +58,6 @@ const Header = ({ user, setUser, toggleSidebar }) => {
           )}
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden mt-4 flex flex-col space-y-4 text-white text-sm font-medium">
-          <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Home</Link>
-          <Link to="/about" onClick={() => setMenuOpen(false)} className="hover:underline">About</Link>
-          <Link to="/submit" onClick={() => setMenuOpen(false)} className="hover:underline">Submit</Link>
-          <Link to="/policy" onClick={() => setMenuOpen(false)} className="hover:underline">Policy</Link>
-
-          {user ? (
-            <button
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
-              className="bg-white text-red-600 px-3 py-1 rounded hover:bg-gray-100 w-fit"
-            >
-              Logout
-            </button>
-          ) : (
-            <Link
-              to="/login"
-              onClick={() => setMenuOpen(false)}
-              className="bg-white text-red-600 px-3 py-1 rounded hover:bg-gray-100 w-fit"
-            >
-              Login
-            </Link>
-          )}
-        </div>
-      )}
     </header>
   );
 };
