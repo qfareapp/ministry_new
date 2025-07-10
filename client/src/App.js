@@ -17,6 +17,7 @@ import AdminLogin from './pages/AdminLogin';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Optional: restore user from localStorage
   useEffect(() => {
@@ -31,28 +32,30 @@ function App() {
 
   return (
     <Router>
-      {/* Top header */}
-      <Header user={user} setUser={setUser} />
+      {/* ✅ UPDATED: pass toggle function to Header */}
+      <Header user={user} setUser={setUser} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Sidebar + Main Content */}
+      {/* ✅ UPDATED: Sidebar + Main Layout with responsive toggle */}
       <div className="flex">
-        <Sidebar />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} /> {/* ✅ UPDATED */}
+
         <div className="flex-1 overflow-y-auto px-4 py-2">
           <Routes>
             <Route path="/" element={<Home user={user} />} />
-            <Route path="/login" element={<Login setUser={setUser} />} /> {/* ✅ Add this */}
-            
+            <Route path="/login" element={<Login setUser={setUser} />} />
+
             <Route path="/submit" element={<SubmitArticle user={user} setUser={setUser} />} />
             <Route path="/article/:id" element={<ArticleDetail user={user} />} />
             <Route path="/about" element={<About />} />
             <Route path="/policy" element={<PolicyPage />} />
             <Route path="/category/:categoryName" element={<CategoryPage />} />
-             {/* ✅ Admin-only protected routes */}
+
+            {/* ✅ Admin-only protected routes */}
             <Route
               path="/admin-panel"
               element={user?.isAdmin ? <AdminPanel /> : <Navigate to="/admin" />}
             />
-             <Route
+            <Route
               path="/admin/edit/:id"
               element={user?.isAdmin ? <EditArticle /> : <Navigate to="/admin" />}
             />
@@ -63,15 +66,15 @@ function App() {
 
             {/* ✅ Admin login page (now at /admin) */}
             <Route
-  path="/admin"
-  element={
-    user?.isAdmin ? <Navigate to="/admin-panel" replace /> : <AdminLogin setUser={setUser} />
-  }
-/>
+              path="/admin"
+              element={
+                user?.isAdmin ? <Navigate to="/admin-panel" replace /> : <AdminLogin setUser={setUser} />
+              }
+            />
             <Route
-  path="/admin-form"
-  element={user?.isAdmin ? <AdminForm /> : <Navigate to="/admin" />}
-/>
+              path="/admin-form"
+              element={user?.isAdmin ? <AdminForm /> : <Navigate to="/admin" />}
+            />
           </Routes>
         </div>
       </div>

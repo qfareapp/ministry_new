@@ -2,15 +2,20 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import categories from "../constants/categories";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleCategoryClick = (catName) => {
     navigate(`/category/${encodeURIComponent(catName)}`);
+    if (onClose) onClose(); // Close sidebar on mobile after selection
   };
 
   return (
-    <div className="w-[200px] h-screen bg-white shadow-md px-4 py-6 sticky top-0">
+    <div
+      className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-white shadow-md px-4 py-6 transform transition-transform duration-200 ease-in-out 
+      ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+      sm:translate-x-0 sm:static sm:block`}
+    >
       <ul className="space-y-4">
         {categories.map((cat, index) => (
           <li

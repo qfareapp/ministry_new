@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 
-const Header = ({ user, setUser }) => {
+const Header = ({ user, setUser, toggleSidebar }) => {  
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -17,16 +17,23 @@ const Header = ({ user, setUser }) => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Left: Logo + Title */}
         <div className="flex items-center space-x-3">
+           {/* ✅ ADDED: Sidebar toggle button (hamburger icon) */}
+          <button 
+            onClick={toggleSidebar} 
+            className="text-white text-2xl mr-2 sm:hidden"  // ✅ ADDED: hidden on larger screens
+          >
+            ☰
+          </button>
           <img src="/assets/puzzle.png" alt="Logo" className="h-10 w-10" />
           <h1 className="text-xl sm:text-2xl font-bold text-white whitespace-nowrap">
             Ministry of Missed Opportunities
           </h1>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger for dropdown menu */}
         <div className="md:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-white">
-            ☰
+            ⋮  {/* ✅ UPDATED: vertical dots for dropdown menu (separate from sidebar toggle) */}
           </button>
         </div>
 
