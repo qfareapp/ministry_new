@@ -37,12 +37,18 @@ const CategoryPage = () => {
   }, [categoryName]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-red-700">🗂️ {categoryName}</h2>
+    // ✅ UPDATED: Added responsive padding
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"> 
+
+      {/* ✅ UPDATED: Responsive heading size and alignment */}
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-red-700 text-center sm:text-left">
+        🗂️ {categoryName}
+      </h2>
 
       {articles.length === 0 ? (
         <div className="text-center mt-10 text-gray-600">
-          <p className="italic text-lg mb-4">
+          {/* ✅ UPDATED: Responsive padding inside the message */}
+          <p className="italic text-lg mb-4 px-2"> 
             💤 The Ministry is catching a nap in this category.<br />
             Go on, shake us up — we dare you.
           </p>
@@ -54,7 +60,8 @@ const CategoryPage = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+        // ✅ ALREADY RESPONSIVE: 1 column (mobile), 2 (tablet), 3 (desktop)
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12"> 
           {articles.map((article) => (
             <ArticleCard key={article._id} article={article} />
           ))}
@@ -63,7 +70,12 @@ const CategoryPage = () => {
 
       {relatedArticles.length > 0 && (
         <>
-          <h3 className="text-2xl font-semibold mb-4 text-gray-800">📌 You May Also Like</h3>
+          {/* ✅ UPDATED: Responsive heading size */}
+          <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-800">
+            📌 You May Also Like
+          </h3>
+
+          {/* ✅ ALREADY RESPONSIVE */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {relatedArticles.map((article) => (
               <ArticleCard key={article._id} article={article} />
