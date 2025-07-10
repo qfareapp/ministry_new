@@ -13,9 +13,9 @@ const Header = ({ user, setUser, toggleSidebar }) => {
   return (
     <header className="w-full bg-red-600 shadow-md px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* ✅ LOGO + TITLE */}
+        {/* ✅ LOGO + TITLE (visible on all screen sizes) */}
         <div className="flex items-center space-x-3">
-          {/* ✅ Sidebar toggle for category (☰) on mobile */}
+          {/* ✅ Sidebar toggle button (mobile only) */}
           <button
             onClick={toggleSidebar}
             className="text-white text-2xl mr-2 sm:hidden"
@@ -23,15 +23,16 @@ const Header = ({ user, setUser, toggleSidebar }) => {
             ☰
           </button>
 
-          <img src="/assets/logo 2.png" alt="Logo" className="h-10 w-10" />
+          {/* ✅ OLD LOGO restored */}
+          <img src="/assets/puzzle.png" alt="Logo" className="h-10 w-10" />
 
-          {/* ✅ Title visible only on desktop */}
-          <h1 className="hidden sm:inline text-xl sm:text-2xl font-bold text-white whitespace-nowrap">
+          {/* ✅ Title: now visible on mobile & desktop */}
+          <h1 className="text-lg sm:text-2xl font-bold text-white whitespace-nowrap">
             Ministry of Missed Opportunities
           </h1>
         </div>
 
-        {/* ✅ Desktop nav */}
+        {/* ✅ Desktop nav only */}
         <div className="hidden md:flex items-center space-x-6 text-white text-sm font-medium">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About</Link>
