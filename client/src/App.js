@@ -38,7 +38,12 @@ function App() {
       {/* ✅ UPDATED: Layout with sidebar + content */}
       <div className="flex relative">
         {/* ✅ Pass props to Sidebar for responsive behavior */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar
+  isOpen={sidebarOpen}
+  onClose={() => setSidebarOpen(false)}
+  user={user}           // ✅ NEW
+  setUser={setUser}     // ✅ NEW
+/>
 
         {/* ✅ Content Area */}
         <div className="flex-1 overflow-y-auto px-4 py-2">
