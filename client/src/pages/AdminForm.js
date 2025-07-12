@@ -12,6 +12,7 @@ const AdminForm = () => {
     body: "",
     isHero: false,
     isHighlight: false,
+     isFeatured: false,
   });
 
   const [success, setSuccess] = useState(false);
@@ -37,6 +38,7 @@ const AdminForm = () => {
         body: "",
         isHero: false,
         isHighlight: false,
+        isFeatured: false,
       });
     } catch (err) {
       console.error(err);
@@ -86,6 +88,16 @@ const AdminForm = () => {
     }
   />
   Mark as News Highlight
+</label>
+<label className="flex items-center gap-2">
+  <input
+    type="checkbox"
+    checked={formData.isFeatured}
+    onChange={(e) =>
+      setFormData({ ...formData, isFeatured: e.target.checked })
+    }
+  />
+  Mark as Featured Article
 </label>
         <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
           Submit Article
