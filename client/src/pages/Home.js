@@ -15,6 +15,12 @@ const Home = ({ user }) => {
       .catch((err) => console.error(err));
   }, []);
 
+  const highlightArticles = articles
+  .filter((a) => a.isHighlight)
+  .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+const mainHighlight = highlightArticles[0];
+const sideHighlights = highlightArticles.slice(1, 4);
   const heroArticle = articles.find((a) => a.isHero) || articles[0];
   const remainingArticles = articles.filter((a) => a._id !== heroArticle?._id);
   const featuredArticle = remainingArticles.length > 0 ? remainingArticles[0] : null;
@@ -28,9 +34,9 @@ const Home = ({ user }) => {
     {heroArticle && <HeroSection article={heroArticle} />}
     {featuredArticle && <FeaturedArticleSection article={featuredArticle} />}
 {/* ✅ Add NewsHighlight here */}
-    {articles.length >= 4 && (
-      <NewsHighlight mainArticle={articles[0]} sideArticles={articles.slice(1, 4)} />
-    )}
+    {highlightArticles.length > 0 && (
+  <NewsHighlight mainArticle={mainHighlight} sideArticles={sideHighlights} />
+)}
     {/* Layout: Main content + Ads */}
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
       {/* Main Articles - 3/4 width */}
