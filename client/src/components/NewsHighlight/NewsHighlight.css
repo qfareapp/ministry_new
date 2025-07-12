@@ -6,7 +6,7 @@
   font-family: sans-serif;
 }
 
-/* Header label (e.g., 🔴 Special or category name) */
+/* Section header (e.g., 🔴 England vs India) */
 .news-highlight-header {
   padding: 12px 16px;
   font-weight: bold;
@@ -14,47 +14,83 @@
   background-color: #1c2530;
 }
 
-/* Main article image with overlay */
-.mobile-hero {
-  position: relative;
-  cursor: pointer;
+/* Layout container for hero + headlines */
+.news-highlight-body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0;
 }
 
-.mobile-hero img {
+/* Mobile layout: stack */
+@media (max-width: 768px) {
+  .news-highlight-body {
+    flex-direction: column;
+  }
+
+  .main-article,
+  .side-articles {
+    width: 100%;
+  }
+
+  .side-articles {
+    border-top: 1px solid #334155;
+    border-left: none;
+  }
+}
+
+/* Desktop layout: side-by-side */
+@media (min-width: 769px) {
+  .main-article {
+    flex: 2;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .side-articles {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-left: 1px solid #334155;
+  }
+}
+
+/* Hero image */
+.main-article img {
   width: 100%;
   height: auto;
-  object-fit: cover;
   max-height: 250px;
-  display: block;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-.mobile-hero-overlay {
+/* Text overlay on hero image */
+.main-article-overlay {
   position: absolute;
   bottom: 0;
   padding: 12px;
   width: 100%;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  border-radius: 0 0 4px 4px;
 }
 
-.mobile-hero-overlay span {
-  font-size: 0.8rem;
-  color: #facc15; /* yellow */
+.main-article-overlay span {
+  font-size: 0.75rem;
+  color: #facc15;
   font-weight: bold;
 }
 
-.mobile-hero-overlay h2 {
+.main-article-overlay h3 {
   font-size: 1rem;
   font-weight: bold;
   margin-top: 4px;
   color: white;
 }
 
-/* List of additional side headlines */
-.mobile-headlines {
-  padding: 10px 16px;
-}
-
-.mobile-headline {
+/* Side headlines */
+.side-article {
   font-size: 0.9rem;
   border-bottom: 1px solid #334155;
   padding: 10px 0;
@@ -62,15 +98,15 @@
   transition: background 0.2s ease;
 }
 
-.mobile-headline:hover {
+.side-article:hover {
   background-color: #2a3748;
 }
 
-.mobile-headline:last-child {
+.side-article:last-child {
   border-bottom: none;
 }
 
-/* Footer section with tabs */
+/* Footer section */
 .news-highlight-footer {
   background-color: #2e3a47;
   text-align: center;
