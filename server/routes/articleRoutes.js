@@ -28,16 +28,21 @@ router.get("/articles/:id", async (req, res) => {
 // ✅ POST /api/articles – for admin manual publish with hero logic
 router.post("/articles", async (req, res) => {
   try {
-    const { isHero, ...rest } = req.body;
+    const { isHero, isFeatured, ...rest } = req.body;
 
-    // If this article is marked as hero, unset previous hero(s)
-    if (isHero) {
-      await Article.updateMany({}, { isHero: false });
-    }
+// ✅ Unset previous hero if needed
+if (isHero) {
+  await Article.updateMany({ isHero: true }, { $set: { isHero: false } });
+}
 
-    const newArticle = new Article({ ...rest, isHero: !!isHero });
-    await newArticle.save();
-    res.status(201).json(newArticle);
+// ✅ Unset previous featured if needed
+if (isFeatured) {
+  await Article.updateMany({ isFeatured: true }, { $set: { isFeatured: false } });
+}
+
+const newArticle = new Article({ ...rest, isHero: !!isHero, isFeatured: !!isFeatured });
+await newArticle.save();
+res.status(201).json(newArticle);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
