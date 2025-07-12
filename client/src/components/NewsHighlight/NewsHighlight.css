@@ -6,91 +6,71 @@
   font-family: sans-serif;
 }
 
+/* Header label (e.g., 🔴 Special or category name) */
 .news-highlight-header {
-  padding: 10px;
+  padding: 12px 16px;
   font-weight: bold;
+  font-size: 1.1rem;
   background-color: #1c2530;
 }
 
-.news-highlight-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-/* ✅ Responsive: stack on small screens */
-@media (max-width: 768px) {
-  .news-highlight-body {
-    flex-direction: column;
-  }
-
-  .main-article {
-    width: 100%;
-  }
-
-  .side-articles {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid #444;
-  }
-}
-
-/* Desktop */
-@media (min-width: 769px) {
-  .main-article {
-    flex: 2;
-    position: relative;
-  }
-
-  .side-articles {
-    flex: 1;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    border-left: 1px solid #444;
-  }
-}
-
-.main-article {
+/* Main article image with overlay */
+.mobile-hero {
   position: relative;
   cursor: pointer;
 }
 
-.main-article img {
+.mobile-hero img {
   width: 100%;
   height: auto;
-  max-height: 300px;
   object-fit: cover;
+  max-height: 250px;
+  display: block;
 }
 
-.main-article-overlay {
+.mobile-hero-overlay {
   position: absolute;
   bottom: 0;
-  padding: 10px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  padding: 12px;
   width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
 }
 
-.main-article-overlay span {
-  color: yellow;
-  font-weight: bold;
+.mobile-hero-overlay span {
   font-size: 0.8rem;
+  color: #facc15; /* yellow */
+  font-weight: bold;
 }
 
-.main-article-overlay h3 {
-  margin: 5px 0 0;
+.mobile-hero-overlay h2 {
   font-size: 1rem;
+  font-weight: bold;
+  margin-top: 4px;
+  color: white;
 }
 
-.side-article {
-  margin-bottom: 10px;
-  border-bottom: 1px solid #444;
-  padding-bottom: 5px;
-  cursor: pointer;
+/* List of additional side headlines */
+.mobile-headlines {
+  padding: 10px 16px;
+}
+
+.mobile-headline {
   font-size: 0.9rem;
+  border-bottom: 1px solid #334155;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
+.mobile-headline:hover {
+  background-color: #2a3748;
+}
+
+.mobile-headline:last-child {
+  border-bottom: none;
+}
+
+/* Footer section with tabs */
 .news-highlight-footer {
   background-color: #2e3a47;
   text-align: center;
