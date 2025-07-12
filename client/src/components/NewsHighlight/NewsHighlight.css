@@ -22,12 +22,15 @@
 }
 
 /* Desktop layout */
+.main-article {
+  position: relative; /* ✅ Always needed */
+  cursor: pointer;
+  padding: 12px;
+}
+
 @media (min-width: 769px) {
   .main-article {
     flex: 2;
-    position: relative;
-    cursor: pointer;
-    padding: 12px;
   }
 
   .side-articles {
