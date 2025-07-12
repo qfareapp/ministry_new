@@ -24,7 +24,7 @@ const sideHighlights = highlightArticles.slice(1, 4);
   const heroArticle = articles.find((a) => a.isHero) || articles[0];
   const remainingArticles = articles.filter((a) => a._id !== heroArticle?._id);
   const featuredArticle = remainingArticles.find((a) => a.isFeatured) || remainingArticles[0];
-  const otherArticles = remainingArticles.slice(1);
+  const otherArticles = remainingArticles.filter((a) => a._id !== featuredArticle?._id);
 
 
   return (
