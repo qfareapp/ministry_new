@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
       {/* ✅ NEW: Backdrop for mobile (only when sidebar is open) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
           onClick={onClose}
         />
       )}
@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
         sm:translate-x-0 sm:static sm:block`}
       >
         {/* ✅ NEW: Mobile-only Nav Links */}
-        <ul className="space-y-3 mb-6 sm:hidden border-b pb-4">
+        <ul className="space-y-3 mb-6 md:hidden border-b pb-4">
           <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
           <li onClick={() => { navigate("/about"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">ℹ️ About</li>
           <li onClick={() => { navigate("/submit"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">✍️ Submit</li>
