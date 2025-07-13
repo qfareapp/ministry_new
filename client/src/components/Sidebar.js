@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
       {/* ✅ NEW: Backdrop for mobile (only when sidebar is open) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-40 z-30 sm:static sm:block"
           onClick={onClose}
         />
       )}
