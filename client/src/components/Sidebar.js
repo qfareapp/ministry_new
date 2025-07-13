@@ -17,50 +17,51 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
   };
 
   return (
-    <>
-      {/* ✅ NEW: Backdrop for mobile (only when sidebar is open) */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30 sm:static sm:block"
-          onClick={onClose}
-        />
-      )}
-
-      {/* ✅ UPDATED: Sidebar wrapper with responsive transform */}
+  <>
+    {/* ✅ Backdrop visible on mobile & tablet when sidebar is open */}
+    {isOpen && (
       <div
-        className={`fixed z-40 top-0 left-0 h-full w-[240px] bg-white shadow-md px-4 py-6 transform transition-transform duration-200 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 lg:static lg:block`}
-      >
-        {/* ✅ NEW: Mobile-only Nav Links */}
-        <ul className="space-y-3 mb-6 sm:hidden border-b pb-4">
-          <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
-          <li onClick={() => { navigate("/about"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">ℹ️ About</li>
-          <li onClick={() => { navigate("/submit"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">✍️ Submit</li>
-          <li onClick={() => { navigate("/policy"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">📜 Policy</li>
-          {user ? (
-            <li onClick={handleLogout} className="cursor-pointer text-gray-800 hover:text-red-600">🚪 Logout</li>
-          ) : (
-            <li onClick={() => { navigate("/login"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🔑 Login</li>
-          )}
-        </ul>
+        className="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"
+        onClick={onClose}
+      />
+    )}
 
-        {/* ✅ CATEGORY LIST */}
-        <ul className="space-y-4">
-          {categories.map((cat, index) => (
-            <li
-              key={index}
-              onClick={() => handleCategoryClick(cat.name)}
-              className="flex items-center space-x-3 text-gray-700 hover:text-red-600 cursor-pointer text-sm font-medium"
-            >
-              <span className="text-xl">{cat.icon}</span>
-              <span>{cat.name}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
+    {/* ✅ Sidebar - slide-in for mobile and tablet; fixed for desktop */}
+    <div
+      className={`fixed z-40 top-0 left-0 h-full w-[240px] bg-white shadow-md px-4 py-6 transform transition-transform duration-200 ease-in-out
+      ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      lg:translate-x-0 lg:static lg:block`}
+    >
+      {/* ✅ Nav Links - hidden on desktop */}
+      <ul className="space-y-3 mb-6 lg:hidden border-b pb-4">
+        <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
+        <li onClick={() => { navigate("/about"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">ℹ️ About</li>
+        <li onClick={() => { navigate("/submit"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">✍️ Submit</li>
+        <li onClick={() => { navigate("/policy"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">📜 Policy</li>
+        {user ? (
+          <li onClick={handleLogout} className="cursor-pointer text-gray-800 hover:text-red-600">🚪 Logout</li>
+        ) : (
+          <li onClick={() => { navigate("/login"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🔑 Login</li>
+        )}
+      </ul>
+
+      {/* ✅ Category List */}
+      <ul className="space-y-4">
+        {categories.map((cat, index) => (
+          <li
+            key={index}
+            onClick={() => handleCategoryClick(cat.name)}
+            className="flex items-center space-x-3 text-gray-700 hover:text-red-600 cursor-pointer text-sm font-medium"
+          >
+            <span className="text-xl">{cat.icon}</span>
+            <span>{cat.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </>
+);
+
 };
 
 export default Sidebar;
