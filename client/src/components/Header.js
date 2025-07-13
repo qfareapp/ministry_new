@@ -18,7 +18,7 @@ const Header = ({ user, setUser, toggleSidebar }) => {
           {/* ✅ Sidebar toggle button (mobile only) */}
           <button
             onClick={toggleSidebar}
-            className="text-white text-2xl mr-1 sm:hidden"
+            className="text-white text-2xl mr-1 block lg:hidden "
           >
             ☰
           </button>
