@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
         md:translate-x-0 md:static md:block`}
       >
         {/* ✅ NEW: Mobile-only Nav Links */}
-        <ul className="space-y-3 mb-6 sm:hidden border-b pb-4">
+        <ul className="space-y-3 mb-6 md:hidden border-b pb-4">
           <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
           <li onClick={() => { navigate("/about"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">ℹ️ About</li>
           <li onClick={() => { navigate("/submit"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">✍️ Submit</li>
