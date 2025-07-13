@@ -30,7 +30,7 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
       <div
         className={`fixed z-40 top-0 left-0 h-full w-[240px] bg-white shadow-md px-4 py-6 transform transition-transform duration-200 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        sm:translate-x-0 sm:static sm:block`}
+        lg:translate-x-0 lg:static lg:block`}
       >
         {/* ✅ NEW: Mobile-only Nav Links */}
         <ul className="space-y-3 mb-6 sm:hidden border-b pb-4">
