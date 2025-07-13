@@ -44,7 +44,7 @@
 }
 
 /* Mobile layout */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .news-highlight-body {
     flex-direction: column;
   }
