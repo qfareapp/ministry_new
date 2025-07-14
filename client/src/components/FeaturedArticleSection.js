@@ -14,10 +14,14 @@ const FeaturedArticleSection = ({ article }) => {
       </Link>
       <p className="text-lg text-gray-700 mt-3 mb-6">{article.description}</p>
       <img
-        src={article.image}
-        alt={article.title}
-        className="w-full h-auto rounded shadow-md object-cover"
-      />
+  src={article.imageUrl}
+  alt={article.title}
+  className="w-full h-auto rounded shadow-md object-cover"
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = "https://via.placeholder.com/600x300?text=Image+Unavailable";
+  }}
+/>
     </div>
   );
 };
