@@ -19,7 +19,9 @@ useEffect(() => {
     })
     .finally(() => setLoading(false));
 }, []);
-
+ const handleDelete = (deletedId) => {
+    setArticles((prev) => prev.filter((a) => a._id !== deletedId));
+  };
   const highlightArticles = articles
   .filter((a) => a.isHighlight)
   .sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -60,7 +62,7 @@ if (error) {
   {/* Main Articles - full width on mobile/tablet, 3/4 on desktop */}
   <div className="col-span-1 md:col-span-3 grid grid-cols-1 gap-6">
     {otherArticles.map((article) => (
-      <ArticleCard key={article._id} article={article} user={user} />
+      <ArticleCard key={article._id} article={article} user={user} onDelete={handleDelete}/>
     ))}
   </div>
 
