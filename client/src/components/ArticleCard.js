@@ -43,39 +43,34 @@ const ArticleCard = ({ article, user, onDelete }) => {
     </button>
 
     <button
-  onClick={async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this article?");
-    if (!confirmDelete) return;
+      onClick={async () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this article?");
+        if (!confirmDelete) return;
 
-    try {
-      console.log("Attempting to delete article ID:", article._id);
+        try {
+          const res = await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
+            method: "DELETE",
+          });
 
-      const res = await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json", // ✅ add this
-        },
-      });
-
-      if (res.ok) {
-        alert("🗑️ Article deleted");
-        onDelete?.(article._id); // ✅ notify parent to remove it from UI
-      } else {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to delete article");
-      }
-    } catch (err) {
-      console.error("Delete failed", err);
-      alert("Failed to delete article.");
-    }
-  }}
-  className="hover:text-red-600"
->
-  🗑️ Deletes
-</button>
-
+          if (res.ok) {
+            alert("🗑️ Article deleted");
+            onDelete?.(article._id); // ✅ Tell parent to refresh list or remove it from UI
+          } else {
+            const error = await res.text(); // ⛔ Get error response body
+            throw new Error(`Failed to delete article: ${error}`);
+          }
+        } catch (err) {
+          console.error("Delete failed", err);
+          alert("Failed to delete article.");
+        }
+      }}
+      className="hover:text-red-600"
+    >
+      🗑️ Delete
+    </button>
   </>
 )}
+
         </div>
       </div>
 
