@@ -10,31 +10,37 @@ const CategoryPage = () => {
   const [relatedArticles, setRelatedArticles] = useState([]);
 
   useEffect(() => {
-    const fetchByCategory = async () => {
-      try {
-        const res = await axios.get("https://ministry-new.onrender.com/api/articles");
+  const fetchByCategory = async () => {
+    try {
+      const res = await axios.get("https://ministry-new.onrender.com/api/articles");
 
-        const filtered = res.data.filter(
-          (article) =>
-            article.category?.toLowerCase().trim() ===
-            categoryName.toLowerCase().trim()
-        );
+      const allArticles = res.data;
 
-        setArticles(filtered);
+      // Filter for the current category
+      const filtered = allArticles.filter(
+        (article) =>
+          article.category?.toLowerCase().trim() ===
+          categoryName.toLowerCase().trim()
+      );
 
-        if (filtered.length > 3) {
-          const shuffled = [...filtered].sort(() => 0.5 - Math.random());
-          setRelatedArticles(shuffled.slice(0, 3));
-        } else {
-          setRelatedArticles([]);
-        }
-      } catch (err) {
-        console.error("Error fetching articles:", err);
-      }
-    };
+      setArticles(filtered);
 
-    fetchByCategory();
-  }, [categoryName]);
+      // Related articles from OTHER categories
+      const others = allArticles.filter(
+        (article) =>
+          article.category?.toLowerCase().trim() !==
+          categoryName.toLowerCase().trim()
+      );
+
+      const shuffled = [...others].sort(() => 0.5 - Math.random());
+      setRelatedArticles(shuffled.slice(0, 3));
+    } catch (err) {
+      console.error("Error fetching articles:", err);
+    }
+  };
+
+  fetchByCategory();
+}, [categoryName]);
 
   return (
     // ✅ UPDATED: Added responsive padding
