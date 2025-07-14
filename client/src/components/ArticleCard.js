@@ -34,13 +34,35 @@ const ArticleCard = ({ article, user }) => {
           <span>💬 {article.comments?.length || 0}</span>
           <span>🔗 {article.shares || 0}</span>
           {isAdmin && (
-            <button
-              onClick={() => navigate(`/admin/edit/${article._id}`)}
-              className="hover:text-blue-600 ml-auto"
-            >
-              ✏️ Edit
-            </button>
-          )}
+  <>
+    <button
+      onClick={() => navigate(`/admin/edit/${article._id}`)}
+      className="hover:text-blue-600 ml-auto"
+    >
+      ✏️ Edit
+    </button>
+
+    <button
+      onClick={async () => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this article?");
+        if (!confirmDelete) return;
+        try {
+          await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
+            method: "DELETE",
+          });
+          alert("🗑️ Article deleted");
+          window.location.reload(); // reload to reflect deletion
+        } catch (err) {
+          console.error("Delete failed", err);
+          alert("Failed to delete article.");
+        }
+      }}
+      className="hover:text-red-600"
+    >
+      🗑️ Delete
+    </button>
+  </>
+)}
         </div>
       </div>
 

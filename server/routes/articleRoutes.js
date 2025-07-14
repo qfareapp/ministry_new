@@ -191,5 +191,18 @@ router.post("/articles/:id/comment", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+// ✅ DELETE /api/articles/:id – Delete an article by ID (Admin only)
+router.delete("/articles/:id", async (req, res) => {
+  try {
+    const deleted = await Article.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+    res.json({ message: "Article deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting article:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 module.exports = router;
