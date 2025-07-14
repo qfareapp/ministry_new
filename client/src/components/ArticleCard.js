@@ -71,7 +71,7 @@ const ArticleCard = ({ article, user, onDelete }) => {
   }}
   className="hover:text-red-600"
 >
-  🗑️ Delete
+  🗑️ Deletes
 </button>
 
   </>
