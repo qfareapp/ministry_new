@@ -43,30 +43,37 @@ const ArticleCard = ({ article, user, onDelete }) => {
     </button>
 
     <button
-                onClick={async () => {
-                  const confirmDelete = window.confirm("Are you sure you want to delete this article?");
-                  if (!confirmDelete) return;
+  onClick={async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this article?");
+    if (!confirmDelete) return;
 
-                  try {
-                    const res = await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
-                      method: "DELETE",
-                    });
+    try {
+      console.log("Attempting to delete article ID:", article._id);
 
-                    if (res.ok) {
-                      alert("🗑️ Article deleted");
-                      onDelete?.(article._id); // ✅ Trigger parent state update
-                    } else {
-                      throw new Error("Failed to delete article");
-                    }
-                  } catch (err) {
-                    console.error("Delete failed", err);
-                    alert("Failed to delete article.");
-                  }
-                }}
-                className="hover:text-red-600"
-              >
-                🗑️ Delete
-              </button>
+      const res = await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json", // ✅ add this
+        },
+      });
+
+      if (res.ok) {
+        alert("🗑️ Article deleted");
+        onDelete?.(article._id); // ✅ notify parent to remove it from UI
+      } else {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to delete article");
+      }
+    } catch (err) {
+      console.error("Delete failed", err);
+      alert("Failed to delete article.");
+    }
+  }}
+  className="hover:text-red-600"
+>
+  🗑️ Delete
+</button>
+
   </>
 )}
         </div>
