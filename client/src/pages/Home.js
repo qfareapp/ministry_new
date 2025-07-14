@@ -6,14 +6,19 @@ import FeaturedArticleSection from "../components/FeaturedArticleSection";
 import NewsHighlight from "../components/NewsHighlight/NewsHighlight";
 
 const Home = ({ user }) => {
-  const [articles, setArticles] = useState([]);
-   
+  const [articles, setArticles] = useState([]); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);  
 
-  useEffect(() => {
-    axios.get("https://ministry-new.onrender.com/api/articles")
-      .then((res) => setArticles(res.data))
-      .catch((err) => console.error(err));
-  }, []);
+useEffect(() => {
+  axios.get("https://ministry-new.onrender.com/api/articles")
+    .then((res) => setArticles(res.data))
+    .catch((err) => {
+      console.error(err);
+      setError("Failed to load articles. Please try again later.");
+    })
+    .finally(() => setLoading(false));
+}, []);
 
   const highlightArticles = articles
   .filter((a) => a.isHighlight)
@@ -25,7 +30,21 @@ const sideHighlights = highlightArticles.slice(1, 4);
   const remainingArticles = articles.filter((a) => a._id !== heroArticle?._id);
   const featuredArticle = remainingArticles.find((a) => a.isFeatured) || remainingArticles[0];
   const otherArticles = remainingArticles.filter((a) => a._id !== featuredArticle?._id);
+if (loading) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6 text-center text-gray-600">
+      Loading articles, please wait...
+    </div>
+  );
+}
 
+if (error) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6 text-center text-red-600">
+      {error}
+    </div>
+  );
+}
 
   return (
   <div className="max-w-7xl mx-auto px-4 py-6">
