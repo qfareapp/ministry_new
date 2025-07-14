@@ -75,10 +75,10 @@ const ArticleCard = ({ article, user, onDelete }) => {
       </div>
 
       <img
-        src={article.imageUrl || "https://via.placeholder.com/100"}
-        alt={article.title}
-        className="w-[100px] h-[100px] object-cover rounded"
-      />
+  src={article.imageUrl || "https://placehold.co/100x100?text=No+Image"}
+  alt={article.title}
+  className="w-[100px] h-[100px] object-cover rounded"
+/>
     </div>
   );
 };
