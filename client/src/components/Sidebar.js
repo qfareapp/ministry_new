@@ -32,6 +32,9 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
       ${isOpen ? "translate-x-0" : "-translate-x-full"}
       lg:translate-x-0 lg:static lg:block`}
     >
+      <div className="text-gray-900 font-semibold text-sm mb-4 px-2">
+  👤 Logged in as: {user.name?.split("@")[0]}
+</div>
       {/* ✅ Nav Links - hidden on desktop */}
       <ul className="space-y-3 mb-6 lg:hidden border-b pb-4">
         <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
