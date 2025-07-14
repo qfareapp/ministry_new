@@ -17,6 +17,7 @@ const articleSchema = new mongoose.Schema({
   imageUrl: { type: String, default: "" },
   isHero: { type: Boolean, default: false },
   isHighlight: { type: Boolean, default: false },
+  isFeatured: { type: Boolean, default: false },
   status: {
     type: String,
     enum: ["Pending", "Approved", "Rejected"],
