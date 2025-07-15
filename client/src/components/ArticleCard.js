@@ -7,8 +7,7 @@ const ArticleCard = ({ article, user, onDelete }) => {
   const isAdmin = user?.isAdmin || false;
 
   return (
-    <div className="flex justify-between items-start p-4 border rounded hover:shadow transition w-full sm:mx-2 md:mx-4 lg:mx-auto">
-
+    <div className="flex justify-between items-start p-4 border rounded hover:shadow transition w-full">
       {/* Left Side - Text Content */}
       <div className="flex-1 pr-4">
         <p className="text-xs uppercase text-red-600 font-bold mb-1">
