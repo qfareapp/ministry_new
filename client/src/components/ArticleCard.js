@@ -72,13 +72,24 @@ const ArticleCard = ({ article, user, onDelete }) => {
 )}
 
         </div>
+      {/* Image for Mobile (Shown below text) */}
+        <div className="block md:hidden mt-4">
+          <img
+            src={article.imageUrl || "https://placehold.co/600x400?text=No+Image"}
+            alt={article.title}
+            className="w-full h-auto rounded object-cover"
+          />
+        </div>
       </div>
 
-      <img
-  src={article.imageUrl || "https://placehold.co/100x100?text=No+Image"}
-  alt={article.title}
-  className="w-[100px] h-[100px] object-cover rounded"
-/>
+      {/* Image for Desktop (Shown on the right) */}
+      <div className="hidden md:block">
+        <img
+          src={article.imageUrl || "https://placehold.co/100x100?text=No+Image"}
+          alt={article.title}
+          className="w-[100px] h-[100px] object-cover rounded"
+        />
+      </div>
     </div>
   );
 };
