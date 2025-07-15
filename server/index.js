@@ -10,7 +10,9 @@ const app = express();
 // ✅ CORS Setup
 const allowedOrigins = [
   "https://ministry-new.vercel.app",
-  "http://localhost:3000"
+  "http://localhost:3000",
+  "https://missd.in",
+  "https://www.missd.in"
 ];
 app.use(cors({
   origin: (origin, callback) => {
