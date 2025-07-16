@@ -4,7 +4,7 @@ const Article = require("../models/Article");
 const UserSubmission = require("../models/UserSubmission");
 
 // ✅ GET all approved articles
-router.get("/articles", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const articles = await Article.find().sort({ date: -1 });
     res.json(articles);
@@ -14,7 +14,7 @@ router.get("/articles", async (req, res) => {
 });
 
 // ✅ GET a specific approved article
-router.get("/articles/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ error: "Article not found" });
@@ -26,7 +26,7 @@ router.get("/articles/:id", async (req, res) => {
 
 // ✅ POST /api/articles – for admin manual publish
 // ✅ POST /api/articles – for admin manual publish with hero logic
-router.post("/articles", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { isHero, isFeatured, ...rest } = req.body;
 
@@ -71,7 +71,7 @@ router.get("/admin/submitted-articles", async (req, res) => {
 });
 
 // ✅ PATCH article by ID (for editing published content)
-router.patch("/articles/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const updatedArticle = await Article.findByIdAndUpdate(
       req.params.id,
@@ -115,7 +115,7 @@ router.patch("/admin/user-submissions/:id", async (req, res) => {
   }
 });
 // ✅ POST /api/articles/:id/like – only allow 1 like per user
-router.post("/articles/:id/like", async (req, res) => {
+router.post("/:id/like", async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) {
@@ -149,7 +149,7 @@ router.post("/articles/:id/like", async (req, res) => {
 });
 
 // ✅ POST /api/articles/:id/share – increment share count
-router.post("/articles/:id/share", async (req, res) => {
+router.post("/:id/share", async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ error: "Article not found" });
@@ -164,7 +164,7 @@ router.post("/articles/:id/share", async (req, res) => {
 });
 
 // ✅ GET /api/articles/:id/comments – fetch comments
-router.get("/articles/:id/comments", async (req, res) => {
+router.get("/:id/comments", async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ error: "Article not found" });
@@ -176,7 +176,7 @@ router.get("/articles/:id/comments", async (req, res) => {
 });
 
 // ✅ POST /api/articles/:id/comment – add new comment
-router.post("/articles/:id/comment", async (req, res) => {
+router.post("/:id/comment", async (req, res) => {
   try {
     const { userId, userName, text } = req.body;
     const article = await Article.findById(req.params.id);
@@ -192,7 +192,7 @@ router.post("/articles/:id/comment", async (req, res) => {
   }
 });
 // ✅ DELETE /api/articles/:id – Delete an article by ID (Admin only)
-router.delete("/articles/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Article.findByIdAndDelete(req.params.id);
     if (!deleted) {
