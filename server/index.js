@@ -47,7 +47,7 @@ const botUserAgents = [
   'googlebot',
   'facebookexternalhit',
   'twitterbot',
-  'WhatsApp',
+  'whatsapp',
   'linkedinbot',
   'slackbot'
 ];
@@ -59,10 +59,10 @@ const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/auth");
 const adminAuthRoutes = require("./routes/adminAuth");
 
-// ✅ Register routes with specific prefixes
-app.use("/api/articles", articleRoutes);    // Handles: /api/articles/*
-app.use("/api/auth", authRoutes);           // Handles: /api/auth/*
-app.use("/api/admin", adminAuthRoutes); 
+// ✅ Register routes
+app.use("/api/articles", articleRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminAuthRoutes);
 
 // ✅ Serve dynamic OG tags for bots visiting article pages
 app.get('/article/:id', async (req, res, next) => {
@@ -74,23 +74,42 @@ app.get('/article/:id', async (req, res, next) => {
       const { id } = req.params;
       const { data: article } = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}`);
 
+      const title = escapeHtml(article?.title || "Read the latest article on missd.in");
+      const description = escapeHtml(article?.body?.slice(0, 140) || "A new voice from the Ministry of Missed Opportunities.");
+      const image = article?.imageUrl || "https://www.missd.in/assets/default-og.jpg";
+      const url = `https://www.missd.in/article/${id}`;
+
       return res.send(`
-        <html>
+        <!DOCTYPE html>
+        <html lang="en">
           <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <meta property="og:title" content="${escapeHtml(article.title)}" />
-            <meta property="og:description" content="${escapeHtml(article?.body?.slice(0, 140) || '')}" />
-            <meta property="og:image" content="${article.imageUrl}" />
-            <meta property="og:url" content="https://www.missd.in/article/${id}" />
+            <title>${title}</title>
+
+            <!-- ✅ Open Graph -->
             <meta property="og:type" content="article" />
-            <script>window.location.replace("https://www.missd.in/article/${id}");</script>
+            <meta property="og:title" content="${title}" />
+            <meta property="og:description" content="${description}" />
+            <meta property="og:image" content="${image}" />
+            <meta property="og:url" content="${url}" />
+            <meta property="og:site_name" content="Ministry of Missed Opportunities" />
+
+            <!-- ✅ Twitter Card -->
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="${title}" />
+            <meta name="twitter:description" content="${description}" />
+            <meta name="twitter:image" content="${image}" />
+            <meta name="twitter:url" content="${url}" />
+
+            <!-- ✅ Redirect to client-side React route -->
+            <script>window.location.replace("${url}");</script>
           </head>
           <body></body>
         </html>
       `);
     } catch (err) {
-      console.error("Error fetching article:", err.message);
+      console.error("❌ Error fetching article:", err.message);
       return res.redirect(`https://www.missd.in/article/${req.params.id}`);
     }
   } else {
@@ -98,13 +117,13 @@ app.get('/article/:id', async (req, res, next) => {
   }
 });
 
-// ✅ Serve frontend build (CRA)
+// ✅ Serve frontend React build
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
-// ✅ DEBUG: Print all registered routes (SAFE VERSION)
+// ✅ DEBUG: Print all registered routes
 console.log("🔍 Listing registered routes:");
 app._router.stack.forEach((middleware) => {
   if (middleware.route && middleware.route.path) {
@@ -130,7 +149,7 @@ app._router.stack.forEach((middleware) => {
   }
 });
 
-// ✅ Fallback route (404 for APIs)
+// ✅ Fallback route for missing APIs
 app.use("/api", (req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
