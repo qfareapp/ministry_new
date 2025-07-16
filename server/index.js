@@ -8,9 +8,10 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ Prerender.io middleware
+// ✅ Prerender.io middleware (only for article preview)
 const prerender = require("prerender-node");
 app.use(
+  "/article/:id",
   prerender
     .set("prerenderToken", process.env.PRERENDER_TOKEN)
     .set("protocol", "https")
@@ -51,19 +52,15 @@ app.use("/api/articles", articleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminAuthRoutes);
 
-// ✅ React frontend (build folder)
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
-
-// ✅ Debug: Route logs (optional)
-const listEndpoints = require("express-list-endpoints");
-console.log("📋 Registered Endpoints:\n", listEndpoints(app));
-
 // ✅ 404 for unknown API routes
 app.use("/api", (req, res) => {
   res.status(404).json({ message: "Not Found" });
+});
+
+// ✅ Serve React frontend (build)
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
 // ✅ Connect MongoDB
