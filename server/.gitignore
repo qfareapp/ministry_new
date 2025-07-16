@@ -1,0 +1,50 @@
+# =========================
+# 🌐 Node.js (Backend)
+# =========================
+node_modules/
+.env
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pids/
+*.pid
+*.seed
+*.log
+
+# Logs
+logs/
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Build artifacts
+dist/
+build/
+
+# Local env files
+*.local
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# PM2 process logs
+pids/
+*.pid
