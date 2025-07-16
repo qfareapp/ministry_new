@@ -31,13 +31,13 @@ const SubmitArticle = ({ user, setUser }) => {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.post('/api/submit-article', {
-        ...form,
-        authorName: user.name,
-        authorEmail: user.email
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.post('/api/articles/submit-article', {
+  ...form,
+  authorName: user.name,
+  authorEmail: user.email
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
 
       alert("✅ Article submitted for review!");
       setForm({ name: '', location: '', title: '', content: '' });
