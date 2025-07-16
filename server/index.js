@@ -52,15 +52,17 @@ const botUserAgents = [
   'slackbot'
 ];
 
-// ✅ Routes
 app.get("/", (req, res) => res.send("✅ API is running"));
+
+// ✅ Import route handlers
 const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/auth");
-const adminAuth = require("./routes/adminAuth");
+const adminAuthRoutes = require("./routes/adminAuth");
 
-app.use("/api", articleRoutes);
-app.use("/api", authRoutes);
-app.use("/api/admin", adminAuth);
+// ✅ Register routes with specific prefixes
+app.use("/api/articles", articleRoutes);    // Handles: /api/articles/*
+app.use("/api/auth", authRoutes);           // Handles: /api/auth/*
+app.use("/api/admin", adminAuthRoutes); 
 
 // ✅ Serve dynamic OG tags for bots visiting article pages
 app.get('/article/:id', async (req, res, next) => {
@@ -89,7 +91,7 @@ app.get('/article/:id', async (req, res, next) => {
       `);
     } catch (err) {
       console.error("Error fetching article:", err.message);
-      return res.redirect(`/article/${req.params.id}`); // fallback
+      return res.redirect(`https://www.missd.in/article/${req.params.id}`);
     }
   } else {
     next(); // non-bot traffic continues to React app
@@ -119,7 +121,7 @@ app._router.stack.forEach((middleware) => {
 });
 
 // ✅ Fallback route (404 for APIs)
-app.use((req, res, next) => {
+app.use("/api", (req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
 
