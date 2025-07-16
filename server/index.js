@@ -104,17 +104,27 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
-// ✅ DEBUG: Print all registered routes
+// ✅ DEBUG: Print all registered routes (SAFE VERSION)
 console.log("🔍 Listing registered routes:");
 app._router.stack.forEach((middleware) => {
-  if (middleware.route) {
-    console.log("📍", middleware.route.stack[0].method.toUpperCase(), middleware.route.path);
+  if (middleware.route && middleware.route.path) {
+    try {
+      const method = middleware.route.stack[0].method.toUpperCase();
+      const path = middleware.route.path;
+      console.log("📍", method, path);
+    } catch (e) {
+      console.warn("⚠️ Skipping malformed route:", middleware.route);
+    }
   } else if (middleware.name === 'router' && middleware.handle.stack) {
     middleware.handle.stack.forEach((handler) => {
-      if (handler.route) {
-        const method = handler.route.stack[0].method.toUpperCase();
-        const path = handler.route.path;
-        console.log("📍", method, path);
+      if (handler.route && handler.route.path) {
+        try {
+          const method = handler.route.stack[0].method.toUpperCase();
+          const path = handler.route.path;
+          console.log("📍", method, path);
+        } catch (e) {
+          console.warn("⚠️ Skipping malformed nested route:", handler.route);
+        }
       }
     });
   }
