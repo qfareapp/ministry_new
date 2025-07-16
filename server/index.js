@@ -5,7 +5,6 @@ const compression = require("compression");
 const helmet = require("helmet");
 const path = require("path");                  // 🔄 for serving React build
 const axios = require("axios");                // 🔄 to fetch article data
-const { makeMiddleware } = require("rendertron-middleware"); // 🔄
 require("dotenv").config();
 
 const app = express();
@@ -52,10 +51,6 @@ const botUserAgents = [
   'slackbot'
 ];
 
-app.use(makeMiddleware({
-  proxyUrl: 'https://render-tron.appspot.com/',
-  userAgentPattern: botUserAgents.join('|'),
-}));
 
 // ✅ Routes
 app.get("/", (req, res) => res.send("✅ API is running"));
