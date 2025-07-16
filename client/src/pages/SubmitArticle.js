@@ -31,7 +31,7 @@ const SubmitArticle = ({ user, setUser }) => {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.post('/api/articles/submit-article', {
+      await axios.post('https://ministry-new.onrender.com/api/articles/submit-article', {
   ...form,
   authorName: user.name,
   authorEmail: user.email
