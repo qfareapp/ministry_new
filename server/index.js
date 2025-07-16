@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const compression = require("compression");
 const helmet = require("helmet");
-const path = require("path");                  // 🔄 for serving React build
-const axios = require("axios");                // 🔄 to fetch article data
+const path = require("path");                  // For serving React build
+const axios = require("axios");                // To fetch article data
 require("dotenv").config();
 
 const app = express();
 
+// ✅ Utility to escape HTML
 function escapeHtml(text = '') {
   return text
     .replace(/&/g, "&amp;")
@@ -18,7 +19,7 @@ function escapeHtml(text = '') {
     .replace(/'/g, "&#039;");
 }
 
-// ✅ CORS Setup
+// ✅ CORS Setup (should be at the top)
 const allowedOrigins = [
   "https://ministry-new.vercel.app",
   "http://localhost:3000",
@@ -51,7 +52,6 @@ const botUserAgents = [
   'slackbot'
 ];
 
-
 // ✅ Routes
 app.get("/", (req, res) => res.send("✅ API is running"));
 const articleRoutes = require("./routes/articleRoutes");
@@ -70,15 +70,15 @@ app.get('/article/:id', async (req, res, next) => {
   if (isBot) {
     try {
       const { id } = req.params;
-      const { data: article } = await axios.get(`https://api.missd.in/api/articles/${id}`);
+      const { data: article } = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}`);
 
       return res.send(`
         <html>
           <head>
-          <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
             <meta property="og:title" content="${escapeHtml(article.title)}" />
-<meta property="og:description" content="${escapeHtml(article?.body?.slice(0, 140) || '')}" />
+            <meta property="og:description" content="${escapeHtml(article?.body?.slice(0, 140) || '')}" />
             <meta property="og:image" content="${article.imageUrl}" />
             <meta property="og:url" content="https://www.missd.in/article/${id}" />
             <meta property="og:type" content="article" />
@@ -96,11 +96,31 @@ app.get('/article/:id', async (req, res, next) => {
   }
 });
 
-// ✅ Serve frontend build (CRA) after all API routes
+// ✅ Serve frontend build (CRA)
 app.use(express.static(path.join(__dirname, "../frontend/build")));
-
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
+
+// ✅ DEBUG: Print all registered routes
+console.log("🔍 Listing registered routes:");
+app._router.stack.forEach((middleware) => {
+  if (middleware.route) {
+    console.log("📍", middleware.route.stack[0].method.toUpperCase(), middleware.route.path);
+  } else if (middleware.name === 'router' && middleware.handle.stack) {
+    middleware.handle.stack.forEach((handler) => {
+      if (handler.route) {
+        const method = handler.route.stack[0].method.toUpperCase();
+        const path = handler.route.path;
+        console.log("📍", method, path);
+      }
+    });
+  }
+});
+
+// ✅ Fallback route (404 for APIs)
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Not Found" });
 });
 
 // ✅ MongoDB Connection
