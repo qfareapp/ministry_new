@@ -52,16 +52,18 @@ app.use("/api/articles", articleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminAuthRoutes);
 
-// ✅ 404 for unknown API routes
-app.use("/api", (req, res) => {
-  res.status(404).json({ message: "Not Found" });
-});
-
 // ✅ Serve React frontend (build)
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
+
+// ✅ 404 for unknown API routes (should come last)
+app.use("/api", (req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
+
+
 
 // ✅ Connect MongoDB
 mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ministry", {
