@@ -9,9 +9,9 @@ require("dotenv").config();
 
 const app = express();
 
-function escapeHtml(text) {
+function escapeHtml(text = '') {
   return text
-    ?.replace(/&/g, "&amp;")
+    .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
@@ -78,7 +78,7 @@ app.get('/article/:id', async (req, res, next) => {
           <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
             <meta property="og:title" content="${escapeHtml(article.title)}" />
-<meta property="og:description" content="${escapeHtml(article.body.slice(0, 140))}" />
+<meta property="og:description" content="${escapeHtml(article?.body?.slice(0, 140) || '')}" />
             <meta property="og:image" content="${article.imageUrl}" />
             <meta property="og:url" content="https://www.missd.in/article/${id}" />
             <meta property="og:type" content="article" />
