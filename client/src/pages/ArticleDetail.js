@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { FiCopy, FiExternalLink, FiShare2 } from "react-icons/fi";
 
+
 const ArticleDetail = ({ user, setUser }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,9 +21,25 @@ const [showShareOptions, setShowShareOptions] = useState(false);
 const articleUrl = `${window.location.origin}/article/${id}`;
 
   useEffect(() => {
+     // Log the article ID to debug undefined issues
+  console.log("Fetched Article ID:", id);
+
+  // Prevent running with invalid or missing ID
+  if (!id) {
+    setArticle(null);
+    setLoading(false);
+    return;
+  }
   const fetchData = async () => {
     try {
       const res = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}`);
+      // Handle missing or empty article object
+      if (!res.data || Object.keys(res.data).length === 0) {
+        console.warn("Article not found or empty for ID:", id);
+        setArticle(null);
+        setLoading(false);
+        return;
+      }
       setArticle(res.data);
       setLikes(res.data.likes || 0);
       setShares(res.data.shares || 0);
@@ -35,23 +52,27 @@ const articleUrl = `${window.location.origin}/article/${id}`;
       setHasLiked(alreadyLiked);
     } catch (err) {
       console.error("Error loading article:", err);
+      setArticle(null); 
     } finally {
       setLoading(false);
     }
   };
 
-  // Generate guest ID if needed
+  fetchData();
+
+  // Fetch more articles, excluding the current one
+  axios
+    .get(`https://ministry-new.onrender.com/api/articles`)
+    .then((res) => {
+      const others = res.data.filter((a) => a._id !== id);
+      setMoreArticles(others.slice(0, 4));
+    })
+    .catch((err) => console.error("Error loading more articles:", err));
+
+  // Ensure guest ID is stored
   if (!localStorage.getItem("guestUserId")) {
     localStorage.setItem("guestUserId", "guest-" + Date.now());
   }
-
-  fetchData();
-  axios.get(`https://ministry-new.onrender.com/api/articles/${id}`)
-  .then((res) => {
-    const others = res.data.filter((a) => a._id !== id);
-    setMoreArticles(others.slice(0, 4));
-  })
-  .catch((err) => console.error("Error loading more articles:", err));
 }, [id, user]);
 
 
@@ -128,8 +149,8 @@ const handleLike = async () => {
     setNewComment("");
   };
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
-  if (!article) return <p className="text-center py-10">Article not found.</p>;
+  if (loading) return <p className="text-center py-10">Loading article, please wait...</p>;
+if (!article || !article.title) return <p className="text-center py-10 text-red-600">⚠️ Article not found.</p>;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
