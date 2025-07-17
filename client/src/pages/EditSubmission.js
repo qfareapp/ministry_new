@@ -64,6 +64,7 @@ const EditSubmission = () => {
           name="title"
           value={form.title}
           onChange={handleChange}
+          autoComplete="off"
           className="w-full p-2 border rounded"
           placeholder="Title"
           required
@@ -72,6 +73,7 @@ const EditSubmission = () => {
           name="location"
           value={form.location}
           onChange={handleChange}
+          autoComplete="off"
           className="w-full p-2 border rounded"
           placeholder="Location"
         />
@@ -79,8 +81,26 @@ const EditSubmission = () => {
           name="name"
           value={form.name}
           onChange={handleChange}
+          autoComplete="name"
           className="w-full p-2 border rounded"
           placeholder="Name"
+        />
+        <input
+          name="authorName"
+          value={form.authorName}
+          onChange={handleChange}
+          autoComplete="off"
+          className="w-full p-2 border rounded"
+          placeholder="Author Name"
+        />
+        <input
+          name="authorEmail"
+          value={form.authorEmail}
+          onChange={handleChange}
+          autoComplete="email"
+          className="w-full p-2 border rounded"
+          placeholder="Author Email"
+          type="email"
         />
         <textarea
           name="content"
