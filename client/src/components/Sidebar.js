@@ -41,7 +41,15 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
       <ul className="space-y-3 mb-6 lg:hidden border-b pb-4">
         <li onClick={() => { navigate("/"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">🏠 Home</li>
         <li onClick={() => { navigate("/about"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">ℹ️ About</li>
-        <li onClick={() => { navigate("/submit"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">✍️ Submit</li>
+        <li
+  onClick={() => {
+    navigate("/submit");
+    onClose();
+  }}
+  className="cursor-pointer text-red-600 font-semibold animate-blink"
+>
+  ✍️ Submit Article
+</li>
         <li onClick={() => { navigate("/policy"); onClose(); }} className="cursor-pointer text-gray-800 hover:text-red-600">📜 Policy</li>
         {user ? (
           <li onClick={handleLogout} className="cursor-pointer text-gray-800 hover:text-red-600">🚪 Logout</li>
