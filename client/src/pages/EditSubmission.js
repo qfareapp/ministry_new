@@ -18,17 +18,25 @@ const EditSubmission = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`/api/admin/user-submissions/${id}`)
-      .then((res) => {
-        setForm(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("❌ Error fetching submission:", err);
-        setLoading(false);
+  axios
+    .get(`/api/admin/user-submissions/${id}`)
+    .then((res) => {
+      const data = res.data || {};
+      setForm({
+        title: data.title || "",
+        content: data.content || "",
+        name: data.name || "",
+        location: data.location || "",
+        authorName: data.authorName || "",
+        authorEmail: data.authorEmail || ""
       });
-  }, [id]);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error("❌ Error fetching submission:", err);
+      setLoading(false);
+    });
+}, [id]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
