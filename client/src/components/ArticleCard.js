@@ -6,6 +6,13 @@ const ArticleCard = ({ article, user, onDelete }) => {
 
   const isAdmin = user?.isAdmin || false;
 
+  const rawImage = article.imageUrl || article.image;
+const fullImageUrl = rawImage
+  ? rawImage.startsWith("http")
+    ? rawImage
+    : `https://ministry-new.onrender.com${rawImage}`
+  : "https://placehold.co/600x400?text=No+Image";
+
   return (
     <div className="flex justify-between items-start p-4 border rounded hover:shadow transition w-full">
       {/* Left Side - Text Content */}
@@ -72,20 +79,20 @@ const ArticleCard = ({ article, user, onDelete }) => {
 )}
 
         </div>
-      {/* Image for Mobile (Shown below text) */}
+      {/* ✅ UPDATED: Mobile Image using fullImageUrl */}
         <div className="block md:hidden mt-4">
           <img
-            src={article.imageUrl || "https://placehold.co/600x400?text=No+Image"}
+            src={fullImageUrl}
             alt={article.title}
             className="w-full h-auto rounded object-cover"
           />
         </div>
       </div>
 
-      {/* Image for Desktop (Shown on the right) */}
+      {/* ✅ UPDATED: Desktop Image using fullImageUrl */}
       <div className="hidden md:block">
         <img
-          src={article.imageUrl || "https://placehold.co/100x100?text=No+Image"}
+          src={fullImageUrl}
           alt={article.title}
           className="w-[100px] h-[100px] object-cover rounded"
         />
