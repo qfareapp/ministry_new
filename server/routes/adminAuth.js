@@ -93,6 +93,33 @@ router.delete('/reject-article/:id', async (req, res) => {
 });
 // ✅ ✅ ✅ END OF NEW SECTION
 
+// ✅ ✅ ✅ NEW SECTION ADDED ↓↓↓
+// Get a specific user submission by ID
+router.get('/user-submissions/:id', async (req, res) => {
+  try {
+    const submission = await UserSubmission.findById(req.params.id);
+    if (!submission) return res.status(404).json({ msg: 'Submission not found' });
+    res.json(submission);
+  } catch (err) {
+    console.error("❌ Error fetching submission by ID:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update a specific user submission by ID
+router.patch('/user-submissions/:id', async (req, res) => {
+  try {
+    const updated = await UserSubmission.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).json({ msg: 'Submission not found' });
+    res.json(updated);
+  } catch (err) {
+    console.error("❌ Error updating submission:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+// ✅ ✅ ✅ END OF NEW SECTION
+
+
 // Optional: Register Admin (one-time)
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
