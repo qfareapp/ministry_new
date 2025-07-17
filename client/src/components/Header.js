@@ -36,7 +36,12 @@ const Header = ({ user, setUser, toggleSidebar }) => {
         <div className="hidden md:flex items-center space-x-6 text-white text-sm font-medium">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/about" className="hover:underline">About</Link>
-          <Link to="/submit" className="hover:underline">Submit</Link>
+          <Link
+  to="/submit"
+  className="relative px-3 py-1 font-semibold text-white border border-white rounded hover:bg-white hover:text-red-600 transition duration-300"
+>
+  Submit Article
+</Link>
           <Link to="/policy" className="hover:underline">Policy</Link>
 
           {user ? (
