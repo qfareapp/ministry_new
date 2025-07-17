@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const SECRET = 'your_secret_key'; // use env file in production
+const UserSubmission = require('../models/UserSubmission');
+const Article = require('../models/Article');
 
 // Admin login
 router.post('/login', async (req, res) => {
@@ -36,6 +38,60 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// ✅ Get all submitted articles (pending review)
+router.get('/submitted-articles', async (req, res) => {
+  try {
+    const submissions = await UserSubmission.find(); // You can add filters if needed
+    res.json(submissions);
+  } catch (err) {
+    console.error("❌ Error fetching submissions:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ ✅ ✅ NEW SECTION ADDED ↓↓↓
+/**
+ * Approve an article: Move from UserSubmission to Article model, then delete original
+ */
+router.patch('/approve-article/:id', async (req, res) => {
+  try {
+    const submission = await UserSubmission.findById(req.params.id);
+    if (!submission) return res.status(404).json({ msg: 'Submission not found' });
+
+    // Create new published article
+    const newArticle = new Article({
+      title: submission.title,
+      content: submission.content,
+      authorName: submission.authorName,
+      location: submission.location,
+      authorEmail: submission.authorEmail,
+      date: new Date() // optional
+    });
+    await newArticle.save();
+
+    // Delete from submissions
+    await UserSubmission.findByIdAndDelete(req.params.id);
+
+    res.json({ msg: 'Article approved and published' });
+  } catch (err) {
+    console.error("❌ Approval error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Reject an article: Delete from UserSubmission
+ */
+router.delete('/reject-article/:id', async (req, res) => {
+  try {
+    await UserSubmission.findByIdAndDelete(req.params.id);
+    res.json({ msg: 'Submission rejected and deleted' });
+  } catch (err) {
+    console.error("❌ Rejection error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+// ✅ ✅ ✅ END OF NEW SECTION
 
 // Optional: Register Admin (one-time)
 router.post('/register', async (req, res) => {
