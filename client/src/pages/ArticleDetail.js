@@ -17,6 +17,7 @@ const ArticleDetail = ({ user, setUser }) => {
   const [moreArticles, setMoreArticles] = useState([]);
   const [newComment, setNewComment] = useState("");
 const [showShareOptions, setShowShareOptions] = useState(false);
+const [hasLiked, setHasLiked] = useState(false);
 
 const articleUrl = `${window.location.origin}/article/${id}`;
 
@@ -50,6 +51,12 @@ const articleUrl = `${window.location.origin}/article/${id}`;
       const currentUserId = user?._id || localStorage.getItem("guestUserId");
       const alreadyLiked = res.data.likedBy?.includes(currentUserId);
       setHasLiked(alreadyLiked);
+
+       // Fetch other articles (excluding current)
+    const allArticles = await axios.get(`https://ministry-new.onrender.com/api/articles`);
+    const others = allArticles.data.filter((a) => a._id !== id);
+    setMoreArticles(others.slice(0, 4));
+
     } catch (err) {
       console.error("Error loading article:", err);
       setArticle(null); 
@@ -59,15 +66,6 @@ const articleUrl = `${window.location.origin}/article/${id}`;
   };
 
   fetchData();
-
-  // Fetch more articles, excluding the current one
-  axios
-    .get(`https://ministry-new.onrender.com/api/articles`)
-    .then((res) => {
-      const others = res.data.filter((a) => a._id !== id);
-      setMoreArticles(others.slice(0, 4));
-    })
-    .catch((err) => console.error("Error loading more articles:", err));
 
   // Ensure guest ID is stored
   if (!localStorage.getItem("guestUserId")) {
@@ -81,7 +79,7 @@ useEffect(() => {
     const hasShared = sessionStorage.getItem(`shared-${id}`);
     if (!hasShared && user) {
       axios
-        .post(`https://ministry-new.onrender.com/${id}/share`, {
+        .post(`https://ministry-new.onrender.com/api/articles/${id}/share`, {
           userId: user.id,
         })
         .then(() => {
@@ -93,10 +91,10 @@ useEffect(() => {
         });
     }
   }
-}, [showShareOptions]);
+}, [showShareOptions, id, user]);
 
 
-const [hasLiked, setHasLiked] = useState(false);
+
 
 const handleLike = async () => {
   if (!user) {
