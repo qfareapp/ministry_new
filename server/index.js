@@ -44,13 +44,15 @@ app.use(helmet());
 // ✅ Routes
 const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/auth");
-const adminAuthRoutes = require("./routes/adminAuth");
+const adminRoutes = require("./routes/admin");
+const rssRoutes = require("./routes/rss");
 
 app.get("/", (req, res) => res.send("✅ API is running"));
 
 app.use("/api/articles", articleRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/admin", adminAuthRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/", rssRoutes);
 
 // ✅ Serve React frontend (build)
 app.use(express.static(path.join(__dirname, "../frontend/build")));
