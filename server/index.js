@@ -44,7 +44,7 @@ app.use(helmet());
 // ✅ Routes
 const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/auth");
-const adminRoutes = require("./routes/admin");
+const adminRoutes = require("./routes/adminAuth");
 const rssRoutes = require("./routes/rss");
 
 app.get("/", (req, res) => res.send("✅ API is running"));
