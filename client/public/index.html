@@ -32,6 +32,19 @@
     <meta name="twitter:description" content="Giving every what-if in India the attention it never got." />
     <meta name="twitter:image" content="https://www.missd.in/assets/puzzle.png" />
 
+    <!-- Google News basic subscriptions -->
+    <script async type="application/javascript" src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
+    <script>
+      (self.SWG_BASIC = self.SWG_BASIC || []).push((basicSubscriptions) => {
+        basicSubscriptions.init({
+          type: "NewsArticle",
+          isPartOfType: ["Product"],
+          isPartOfProductId: "CAowrMfCDA:openaccess",
+          clientOptions: { theme: "light", lang: "en" },
+        });
+      });
+    </script>
+
     <!-- ✅ Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VS77568WTH"></script>
     <script>
