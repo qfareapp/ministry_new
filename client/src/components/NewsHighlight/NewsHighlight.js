@@ -2,8 +2,11 @@ import React from "react";
 import "./NewsHighlight.css";
 import { useNavigate } from "react-router-dom";
 
+const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
+
 const NewsHighlight = ({ mainArticle, sideArticles }) => {
   const navigate = useNavigate();
+  if (!mainArticle) return null;
 
   const handleMainClick = () => navigate(`/article/${mainArticle._id}`);
   const handleSideClick = (id) => navigate(`/article/${id}`);
@@ -11,35 +14,55 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
   return (
     <div className="news-highlight-container">
       <div className="news-highlight-header">
-        🔴 {mainArticle.category}
+        <div>
+          <p className="news-highlight-eyebrow">Spotlight</p>
+          <h3 className="news-highlight-title">Hand-picked for you</h3>
+        </div>
+        <button className="news-highlight-cta" onClick={handleMainClick}>
+          Open main story
+        </button>
       </div>
 
       <div className="news-highlight-body">
-        {/* Left - Main Story */}
         <div className="main-article" onClick={handleMainClick}>
           <img
-            src={mainArticle.imageUrl || "https://via.placeholder.com/600x300?text=No+Image"}
-            alt="Main"
+            src={
+              mainArticle.imageUrl ||
+              "https://via.placeholder.com/600x300?text=No+Image"
+            }
+            alt={mainArticle.title}
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/600x300?text=Image+Unavailable";
+              e.target.src =
+                "https://via.placeholder.com/600x300?text=Image+Unavailable";
             }}
           />
           <div className="main-article-overlay">
-            <span>{mainArticle.category?.toUpperCase()}</span>
+            <span className="main-article-badge">
+              {mainArticle.category?.toUpperCase() || "FEATURED"}
+            </span>
             <h3>{mainArticle.title}</h3>
+            <p>
+              {stripHtml(mainArticle.description || mainArticle.body).slice(
+                0,
+                110
+              )}
+              ...
+            </p>
           </div>
         </div>
 
-        {/* Right - Side Articles */}
         <div className="side-articles">
-          {sideArticles.map((article) => (
+          {(sideArticles || []).map((article) => (
             <div
               key={article._id}
               className="side-article"
               onClick={() => handleSideClick(article._id)}
             >
-              {article.title}
+              <span className="side-article-category">
+                {article.category || "General"}
+              </span>
+              <div className="side-article-title">{article.title}</div>
             </div>
           ))}
         </div>

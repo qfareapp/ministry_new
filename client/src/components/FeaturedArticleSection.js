@@ -1,27 +1,45 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
+
 const FeaturedArticleSection = ({ article }) => {
   if (!article) return null;
 
+  const description =
+    article.description ||
+    stripHtml(article.body).slice(0, 160) ||
+    "A featured story selected for you.";
+
   return (
-    <div className="bg-white py-10 px-4 max-w-5xl mx-auto">
-      <p className="text-red-600 font-bold uppercase mb-2">{article.category} News</p>
-      <Link to={`/article/${article._id}`} target="_blank">
-        <h2 className="text-3xl font-extrabold text-gray-900 leading-tight hover:text-red-700">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="p-5 space-y-3">
+        <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold uppercase text-red-700">
+          Featured
+        </span>
+        <Link
+          to={`/article/${article._id}`}
+          target="_blank"
+          className="block text-xl font-bold leading-tight text-slate-900 transition hover:text-red-600"
+        >
           {article.title}
-        </h2>
-      </Link>
-      <p className="text-lg text-gray-700 mt-3 mb-6">{article.description}</p>
-      <img
-  src={article.imageUrl}
-  alt={article.title}
-  className="w-full h-auto rounded shadow-md object-cover"
-  onError={(e) => {
-    e.target.onerror = null;
-    e.target.src = "https://via.placeholder.com/600x300?text=Image+Unavailable";
-  }}
-/>
+        </Link>
+        <p className="text-sm text-gray-700 leading-relaxed">{description}</p>
+      </div>
+      <div className="px-5 pb-5">
+        <div className="overflow-hidden rounded-xl bg-gray-100">
+          <img
+            src={article.imageUrl}
+            alt={article.title}
+            className="h-52 w-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src =
+                "https://via.placeholder.com/600x300?text=Image+Unavailable";
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };

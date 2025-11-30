@@ -1,101 +1,96 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
+
 const ArticleCard = ({ article, user, onDelete }) => {
   const navigate = useNavigate();
-
   const isAdmin = user?.isAdmin || false;
 
   const rawImage = article.imageUrl || article.image;
-const fullImageUrl = rawImage
-  ? rawImage.startsWith("http")
-    ? rawImage
-    : `https://ministry-new.onrender.com${rawImage}`
-  : "https://placehold.co/600x400?text=No+Image";
+  const fullImageUrl = rawImage
+    ? rawImage.startsWith("http")
+      ? rawImage
+      : `https://ministry-new.onrender.com${rawImage}`
+    : "https://placehold.co/640x400?text=No+Image";
+
+  const snippet = stripHtml(article.body || "").slice(0, 160);
 
   return (
-    <div className="flex justify-between items-start p-4 border rounded hover:shadow transition w-full">
-      {/* Left Side - Text Content */}
-      <div className="flex-1 pr-4">
-        <p className="text-xs uppercase text-red-600 font-bold mb-1">
-          {article.category || "General"}
-        </p>
-
-        <h2 className="text-lg font-bold text-gray-900 hover:text-red-600 leading-snug">
-          <a
-            href={`/article/${article._id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {article.title}
-          </a>
-        </h2>
-
-        <p className="text-sm text-gray-600 mt-1">
-          {article.body?.slice(0, 120)}...
-        </p>
-
-         <div className="mt-3 flex gap-6 text-sm text-gray-600">
-          <span>👍 {article.likes || 0}</span>
-          <span>💬 {article.comments?.length || 0}</span>
-          <span>🔗 {article.shares || 0}</span>
-          {isAdmin && (
-  <>
-    <button
-      onClick={() => navigate(`/admin/edit/${article._id}`)}
-      className="hover:text-blue-600 ml-auto"
-    >
-      ✏️ Edit
-    </button>
-
-    <button
-      onClick={async () => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this article?");
-        if (!confirmDelete) return;
-
-        try {
-          const res = await fetch(`https://ministry-new.onrender.com/api/articles/${article._id}`, {
-            method: "DELETE",
-          });
-
-          if (res.ok) {
-            alert("🗑️ Article deleted");
-            onDelete?.(article._id); // ✅ Tell parent to refresh list or remove it from UI
-          } else {
-            const error = await res.text(); // ⛔ Get error response body
-            throw new Error(`Failed to delete article: ${error}`);
-          }
-        } catch (err) {
-          console.error("Delete failed", err);
-          alert("Failed to delete article.");
-        }
-      }}
-      className="hover:text-red-600"
-    >
-      🗑️ Delete
-    </button>
-  </>
-)}
-
-        </div>
-      {/* ✅ UPDATED: Mobile Image using fullImageUrl */}
-        <div className="block md:hidden mt-4">
+    <div className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="grid gap-4 sm:grid-cols-5">
+        <div className="relative sm:col-span-2">
           <img
             src={fullImageUrl}
             alt={article.title}
-            className="w-full h-auto rounded object-cover"
+            className="w-full aspect-[4/5] rounded-2xl object-cover"
           />
+          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase text-red-600 shadow">
+            {article.category || "General"}
+          </span>
         </div>
-      </div>
 
-      {/* ✅ UPDATED: Desktop Image using fullImageUrl */}
-      <div className="hidden md:block">
-        <img
-          src={fullImageUrl}
-          alt={article.title}
-          className="w-[100px] h-[100px] object-cover rounded"
-        />
+        <div className="flex flex-col gap-3 p-4 sm:col-span-3">
+          <button
+            onClick={() => navigate(`/article/${article._id}`)}
+            className="text-left text-lg font-bold leading-tight text-slate-900 transition hover:text-red-600"
+          >
+            {article.title}
+          </button>
+
+          <p className="text-sm text-gray-700 leading-relaxed truncate-lines">
+            {snippet || "No description available for this story yet."}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+            <span>{article.likes || 0} likes</span>
+            <span>{article.comments?.length || 0} comments</span>
+            <span>{article.shares || 0} shares</span>
+
+            {isAdmin && (
+              <div className="ml-auto flex items-center gap-3 text-sm">
+                <button
+                  onClick={() => navigate(`/admin/edit/${article._id}`)}
+                  className="font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={async () => {
+                    const confirmDelete = window.confirm(
+                      "Are you sure you want to delete this article?"
+                    );
+                    if (!confirmDelete) return;
+
+                    try {
+                      const res = await fetch(
+                        `https://ministry-new.onrender.com/api/articles/${article._id}`,
+                        {
+                          method: "DELETE",
+                        }
+                      );
+
+                      if (res.ok) {
+                        alert("Article deleted");
+                        onDelete?.(article._id);
+                      } else {
+                        const error = await res.text();
+                        throw new Error(`Failed to delete article: ${error}`);
+                      }
+                    } catch (err) {
+                      console.error("Delete failed", err);
+                      alert("Failed to delete article.");
+                    }
+                  }}
+                  className="font-semibold text-red-600 hover:text-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
