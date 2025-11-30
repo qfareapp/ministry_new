@@ -46,6 +46,7 @@ const articleRoutes = require("./routes/articleRoutes");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/adminAuth");
 const rssRoutes = require("./routes/rss");
+const sitemapRoutes = require("./routes/sitemap");
 
 app.get("/", (req, res) => res.send("✅ API is running"));
 
@@ -53,6 +54,7 @@ app.use("/api/articles", articleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/", rssRoutes);
+app.use("/", sitemapRoutes);
 
 // ✅ Serve React frontend (build)
 app.use(express.static(path.join(__dirname, "../frontend/build")));
