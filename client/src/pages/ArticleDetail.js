@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { FiCopy, FiExternalLink, FiShare2 } from "react-icons/fi";
@@ -177,13 +178,33 @@ const ArticleDetail = ({ user, setUser }) => {
   if (!article || !article.title)
     return <p className="text-center py-10 text-red-600">Article not found.</p>;
 
+  const ogImage = article?.imageUrl || `${window.location.origin}/assets/puzzle.png`;
+  const ogDescription =
+    article?.description || stripHtml(article?.body).slice(0, 180) || "Read the latest from Ministry of Missed Opportunities.";
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
       {structuredData && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
+        <Helmet>
+          <title>{article.title}</title>
+          <meta name="description" content={ogDescription} />
+
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={article.title} />
+          <meta property="og:description" content={ogDescription} />
+          <meta property="og:url" content={articleUrl} />
+          <meta property="og:image" content={ogImage} />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={article.title} />
+          <meta name="twitter:description" content={ogDescription} />
+          <meta name="twitter:image" content={ogImage} />
+          <link rel="canonical" href={articleUrl} />
+
+          <script type="application/ld+json">
+            {JSON.stringify(structuredData)}
+          </script>
+        </Helmet>
       )}
 
       <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
