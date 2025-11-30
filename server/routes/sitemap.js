@@ -14,7 +14,12 @@ const xmlEscape = (value = "") =>
 
 const formatDate = (value) => new Date(value || Date.now()).toISOString();
 
-router.get("/sitemap.xml", (req, res) => {
+const sendXml = (res, body) => {
+  res.setHeader("Content-Type", "application/xml; charset=UTF-8");
+  res.send(body.trim());
+};
+
+const sitemapIndex = (req, res) => {
   const lastmod = formatDate();
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -27,12 +32,13 @@ router.get("/sitemap.xml", (req, res) => {
     <lastmod>${lastmod}</lastmod>
   </sitemap>
 </sitemapindex>`;
+  sendXml(res, body);
+};
 
-  res.header("Content-Type", "application/xml; charset=UTF-8");
-  res.send(body);
-});
+router.get("/sitemap.xml", sitemapIndex);
+router.head("/sitemap.xml", sitemapIndex);
 
-router.get("/main-sitemap.xml", async (req, res) => {
+const mainSitemap = async (req, res) => {
   try {
     const pages = [
       `${BASE_URL}/`,
@@ -72,15 +78,17 @@ router.get("/main-sitemap.xml", async (req, res) => {
 ${urls}
 </urlset>`;
 
-    res.header("Content-Type", "application/xml; charset=UTF-8");
-    res.send(body);
+    sendXml(res, body);
   } catch (err) {
     console.error("Main sitemap error:", err);
     res.status(500).send("Error generating sitemap");
   }
-});
+};
 
-router.get("/news-sitemap.xml", async (req, res) => {
+router.get("/main-sitemap.xml", mainSitemap);
+router.head("/main-sitemap.xml", mainSitemap);
+
+const newsSitemap = async (req, res) => {
   try {
     const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
     const articles = await Article.find({
@@ -115,12 +123,14 @@ router.get("/news-sitemap.xml", async (req, res) => {
 ${items}
 </urlset>`;
 
-    res.header("Content-Type", "application/xml; charset=UTF-8");
-    res.send(body);
+    sendXml(res, body);
   } catch (err) {
     console.error("News sitemap error:", err);
     res.status(500).send("Error generating news sitemap");
   }
-});
+};
+
+router.get("/news-sitemap.xml", newsSitemap);
+router.head("/news-sitemap.xml", newsSitemap);
 
 module.exports = router;
