@@ -240,7 +240,7 @@ const ArticleDetail = ({ user, setUser }) => {
       )}
 
       <div
-        className="prose prose-lg mb-12 leading-relaxed text-left max-w-none"
+        className="prose prose-lg mb-12 leading-relaxed text-left max-w-none [&>p]:my-0 [&>p+p]:mt-4"
         dangerouslySetInnerHTML={{ __html: formatArticleBodyHtml(article.body || "") }}
       />
 
