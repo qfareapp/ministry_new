@@ -6,6 +6,14 @@ const escapeHtml = (value = "") =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 
+const decodeHtmlEntities = (value = "") =>
+  String(value)
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#0*39;/gi, "'")
+    .replace(/&amp;/gi, "&");
+
 const sanitizeHtml = (value = "") => {
   let safe = String(value);
 
@@ -24,8 +32,9 @@ export const formatArticleBodyHtml = (raw = "") => {
   const body = String(raw || "");
   if (!body.trim()) return "";
 
-  const hasTags = /<[^>]+>/.test(body);
-  if (hasTags) return sanitizeHtml(body);
+  const decodedBody = decodeHtmlEntities(body);
+  const hasTags = /<[^>]+>/.test(decodedBody);
+  if (hasTags) return sanitizeHtml(decodedBody);
 
   const paragraphs = body
     .split(/\n\s*\n/)
@@ -35,4 +44,3 @@ export const formatArticleBodyHtml = (raw = "") => {
 
   return paragraphs.join("");
 };
-
