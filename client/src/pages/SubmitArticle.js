@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import Login from "../components/Login";
+import EditorToolbar from "../components/EditorToolbar";
+import { applyEditorFormat } from "../utils/editorFormatting";
 
 const SubmitArticle = ({ user, setUser }) => {
   const [form, setForm] = useState({ name: "", location: "", title: "", content: "" });
@@ -54,47 +56,21 @@ const SubmitArticle = ({ user, setUser }) => {
     const el = textareaRef.current;
     if (!el) return;
 
-    const { selectionStart, selectionEnd, value } = el;
-    const selected = value.slice(selectionStart, selectionEnd) || "text";
-    let formatted = selected;
-    let offset = 0;
+    const linkUrl = format === "link" ? window.prompt("Enter link URL") || "" : "";
+    const result = applyEditorFormat({
+      value: form.content,
+      selectionStart: el.selectionStart,
+      selectionEnd: el.selectionEnd,
+      action: format,
+      linkUrl,
+    });
+    if (!result) return;
 
-    switch (format) {
-      case "bold":
-        formatted = `**${selected}**`;
-        offset = 2;
-        break;
-      case "italic":
-        formatted = `*${selected}*`;
-        offset = 1;
-        break;
-      case "underline":
-        formatted = `<u>${selected}</u>`;
-        offset = 3;
-        break;
-      case "quote":
-        formatted = `> ${selected}`;
-        offset = 2;
-        break;
-      case "list":
-        formatted = selected
-          .split("\n")
-          .map((line) => (line.trim().length ? `- ${line}` : "- "))
-          .join("\n");
-        offset = 2;
-        break;
-      default:
-        break;
-    }
+    setForm((prev) => ({ ...prev, content: result.value }));
 
-    const newValue = value.slice(0, selectionStart) + formatted + value.slice(selectionEnd);
-    setForm((prev) => ({ ...prev, content: newValue }));
-
-    const start = selectionStart + offset;
-    const end = selectionStart + formatted.length - offset;
     requestAnimationFrame(() => {
       el.focus();
-      el.setSelectionRange(start, end);
+      el.setSelectionRange(result.start, result.end);
     });
   };
 
@@ -138,24 +114,7 @@ const SubmitArticle = ({ user, setUser }) => {
         />
 
         <div className="space-y-2">
-          <div className="flex flex-wrap gap-2">
-            {[
-              { label: "Bold", action: "bold" },
-              { label: "Italic", action: "italic" },
-              { label: "Underline", action: "underline" },
-              { label: "Quote", action: "quote" },
-              { label: "List", action: "list" },
-            ].map((item) => (
-              <button
-                key={item.action}
-                type="button"
-                onClick={() => applyFormat(item.action)}
-                className="rounded border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-100"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
+          <EditorToolbar onAction={applyFormat} />
           <textarea
             ref={textareaRef}
             name="content"
@@ -166,8 +125,7 @@ const SubmitArticle = ({ user, setUser }) => {
             required
           />
           <p className="text-xs text-gray-500">
-            Use the buttons to add quick formatting. Markdown and basic tags like &lt;u&gt; are
-            supported when reading.
+            Formatting supported: bold, italic, underline, heading, quote, lists, and links.
           </p>
         </div>
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import { FiCopy, FiExternalLink, FiShare2 } from "react-icons/fi";
 import { normalizeImageUrl } from "../utils/image";
 import { getArticlePath } from "../utils/article";
+import { formatArticleBodyHtml } from "../utils/articleBody";
 
 const stripHtml = (value) => (value || "").replace(/<[^>]*>/g, "");
 const isObjectId = (value) => /^[a-f\d]{24}$/i.test(String(value || ""));
@@ -238,16 +239,10 @@ const ArticleDetail = ({ user, setUser }) => {
         />
       )}
 
-      <div className="prose prose-lg mb-12">
-        {(article.body || "")
-          .split(/\n\s*\n/)
-          .filter(Boolean)
-          .map((para, index) => (
-            <p key={index} className="mb-4 leading-relaxed text-justify">
-              {para}
-            </p>
-          ))}
-      </div>
+      <div
+        className="prose prose-lg mb-12 leading-relaxed text-justify max-w-none"
+        dangerouslySetInnerHTML={{ __html: formatArticleBodyHtml(article.body || "") }}
+      />
 
       <div className="flex space-x-4 mb-8">
         <button

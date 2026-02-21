@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import EditorToolbar from "../components/EditorToolbar";
+import { applyEditorFormat } from "../utils/editorFormatting";
 
 const EditSubmission = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const textareaRef = useRef(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -54,6 +57,28 @@ const EditSubmission = () => {
     }
   };
 
+  const handleEditorAction = (action) => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const linkUrl = action === "link" ? window.prompt("Enter link URL") || "" : "";
+    const result = applyEditorFormat({
+      value: form.content || "",
+      selectionStart: el.selectionStart,
+      selectionEnd: el.selectionEnd,
+      action,
+      linkUrl,
+    });
+
+    if (!result) return;
+
+    setForm((prev) => ({ ...prev, content: result.value }));
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(result.start, result.end);
+    });
+  };
+
   if (loading) return <p className="p-6">Loading submission...</p>;
 
   return (
@@ -85,7 +110,9 @@ const EditSubmission = () => {
         className="w-full p-2 border rounded"
         placeholder="Name"
       />
+      <EditorToolbar onAction={handleEditorAction} />
       <textarea
+        ref={textareaRef}
         name="content"
         value={form.content}
         onChange={handleChange}
