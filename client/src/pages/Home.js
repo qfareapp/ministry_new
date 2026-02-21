@@ -125,7 +125,7 @@ const Home = ({ user }) => {
               <>
                 <div className="space-y-4 lg:hidden">
                   {otherArticles.map((article) => (
-                    <ArticleCard
+                    <FullImageArticleCard
                       key={article._id}
                       article={article}
                       user={user}
