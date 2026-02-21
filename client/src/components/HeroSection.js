@@ -18,9 +18,6 @@ const HeroSection = ({ article }) => {
   if (!article) return null;
 
   const safeTitle = article.title || "Featured story";
-  const trimmedTitle =
-    safeTitle.length > 60 ? `${safeTitle.slice(0, 60)}...` : safeTitle;
-  const description = stripHtml(article.body || article.description).slice(0, 220);
   const displayDate = formatDate(article.date || article.createdAt);
   const imageSrc =
     normalizeImageUrl(article.imageUrl) ||
@@ -45,10 +42,6 @@ const HeroSection = ({ article }) => {
           <h2 className="text-3xl sm:text-4xl font-bold leading-tight">
             {safeTitle}
           </h2>
-
-          <p className="text-base sm:text-lg text-white/90 leading-relaxed">
-            {description || "A highlighted story picked for you today."}
-          </p>
 
           <div className="flex flex-wrap gap-3">
             <button
@@ -88,12 +81,6 @@ const HeroSection = ({ article }) => {
                   "https://via.placeholder.com/800x450?text=Image+Unavailable";
               }}
             />
-          </div>
-          <div className="absolute -left-4 bottom-4 rounded-2xl bg-white text-slate-900 px-4 py-3 shadow-lg">
-            <p className="text-xs font-semibold uppercase text-gray-500">
-              Top pick
-            </p>
-            <p className="text-sm font-bold leading-tight">{trimmedTitle}</p>
           </div>
         </div>
       </div>

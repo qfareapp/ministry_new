@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import HeroSection from "../components/HeroSection";
 import ArticleCard from "../components/ArticleCard";
+import FullImageArticleCard from "../components/FullImageArticleCard";
 import FeaturedArticleSection from "../components/FeaturedArticleSection";
 import NewsHighlight from "../components/NewsHighlight/NewsHighlight";
 
@@ -122,14 +123,23 @@ const Home = ({ user }) => {
               </div>
             ) : (
               <div className="space-y-4">
-                {otherArticles.map((article) => (
-                  <ArticleCard
-                    key={article._id}
-                    article={article}
-                    user={user}
-                    onDelete={handleDelete}
-                  />
-                ))}
+                {otherArticles.map((article, index) =>
+                  (index + 1) % 4 === 0 ? (
+                    <FullImageArticleCard
+                      key={article._id}
+                      article={article}
+                      user={user}
+                      onDelete={handleDelete}
+                    />
+                  ) : (
+                    <ArticleCard
+                      key={article._id}
+                      article={article}
+                      user={user}
+                      onDelete={handleDelete}
+                    />
+                  )
+                )}
               </div>
             )}
           </div>

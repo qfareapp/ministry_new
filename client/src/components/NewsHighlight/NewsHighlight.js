@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { normalizeImageUrl } from "../../utils/image";
 import { getArticlePath } from "../../utils/article";
 
-const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
-
 const NewsHighlight = ({ mainArticle, sideArticles }) => {
   const navigate = useNavigate();
   if (!mainArticle) return null;
@@ -44,13 +42,6 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
               {mainArticle.category?.toUpperCase() || "FEATURED"}
             </span>
             <h3>{mainArticle.title}</h3>
-            <p>
-              {stripHtml(mainArticle.description || mainArticle.body).slice(
-                0,
-                110
-              )}
-              ...
-            </p>
           </div>
         </div>
 
