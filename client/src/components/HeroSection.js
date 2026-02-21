@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { normalizeImageUrl } from "../utils/image";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -20,6 +21,9 @@ const HeroSection = ({ article }) => {
     safeTitle.length > 60 ? `${safeTitle.slice(0, 60)}...` : safeTitle;
   const description = stripHtml(article.body || article.description).slice(0, 220);
   const displayDate = formatDate(article.date || article.createdAt);
+  const imageSrc =
+    normalizeImageUrl(article.imageUrl) ||
+    "https://via.placeholder.com/800x450?text=No+Image";
 
   return (
     <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-red-700 to-amber-500 text-white shadow-xl">
@@ -74,10 +78,7 @@ const HeroSection = ({ article }) => {
         <div className="relative">
           <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur">
             <img
-              src={
-                article.imageUrl ||
-                "https://via.placeholder.com/800x450?text=No+Image"
-              }
+              src={imageSrc}
               alt={safeTitle}
               className="h-full max-h-[420px] w-full object-cover"
               onError={(e) => {

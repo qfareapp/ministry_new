@@ -1,6 +1,7 @@
 import React from "react";
 import "./NewsHighlight.css";
 import { useNavigate } from "react-router-dom";
+import { normalizeImageUrl } from "../../utils/image";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -10,6 +11,9 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
 
   const handleMainClick = () => navigate(`/article/${mainArticle._id}`);
   const handleSideClick = (id) => navigate(`/article/${id}`);
+  const mainImageSrc =
+    normalizeImageUrl(mainArticle.imageUrl) ||
+    "https://via.placeholder.com/600x300?text=No+Image";
 
   return (
     <div className="news-highlight-container">
@@ -26,10 +30,7 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
       <div className="news-highlight-body">
         <div className="main-article" onClick={handleMainClick}>
           <img
-            src={
-              mainArticle.imageUrl ||
-              "https://via.placeholder.com/600x300?text=No+Image"
-            }
+            src={mainImageSrc}
             alt={mainArticle.title}
             onError={(e) => {
               e.target.onerror = null;

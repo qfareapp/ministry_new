@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { FiCopy, FiExternalLink, FiShare2 } from "react-icons/fi";
+import { normalizeImageUrl } from "../utils/image";
 
 const stripHtml = (value) => (value || "").replace(/<[^>]*>/g, "");
 
@@ -30,7 +31,8 @@ const ArticleDetail = ({ user, setUser }) => {
       article.description || stripHtml(article.body).slice(0, 200);
     const published = article.date || article.createdAt || new Date().toISOString();
     const modified = article.updatedAt || published;
-    const imageUrl = article.imageUrl || `${window.location.origin}/logo512.png`;
+    const imageUrl =
+      normalizeImageUrl(article.imageUrl) || `${window.location.origin}/logo512.png`;
 
     return {
       "@context": "https://schema.org",
@@ -149,18 +151,6 @@ const ArticleDetail = ({ user, setUser }) => {
     }
   };
 
-  const handleShare = async () => {
-    if (!user) {
-      navigate("/login", { state: { from: location.pathname } });
-      return;
-    }
-
-    await axios.post(`https://ministry-new.onrender.com/api/articles/${id}/share`, {
-      userId: user.id,
-    });
-    setShares((prev) => prev + 1);
-  };
-
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!user || !newComment.trim()) return;
@@ -178,7 +168,9 @@ const ArticleDetail = ({ user, setUser }) => {
   if (!article || !article.title)
     return <p className="text-center py-10 text-red-600">Article not found.</p>;
 
-  const ogImage = article?.imageUrl || `${window.location.origin}/assets/puzzle.png`;
+  const ogImage =
+    normalizeImageUrl(article?.imageUrl) ||
+    `${window.location.origin}/assets/puzzle.png`;
   const ogDescription =
     article?.description || stripHtml(article?.body).slice(0, 180) || "Read the latest from Ministry of Missed Opportunities.";
 
@@ -218,11 +210,15 @@ const ArticleDetail = ({ user, setUser }) => {
         <span>{shares} Shares</span>
       </div>
 
-      {article.imageUrl && (
+      {normalizeImageUrl(article.imageUrl) && (
         <img
-          src={article.imageUrl}
+          src={normalizeImageUrl(article.imageUrl)}
           alt={article.title}
           className="w-full max-h-[400px] object-cover rounded mb-8"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://via.placeholder.com/800x450?text=Image+Unavailable";
+          }}
         />
       )}
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { normalizeImageUrl } from "../utils/image";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -8,11 +9,8 @@ const ArticleCard = ({ article, user, onDelete }) => {
   const isAdmin = user?.isAdmin || false;
 
   const rawImage = article.imageUrl || article.image;
-  const fullImageUrl = rawImage
-    ? rawImage.startsWith("http")
-      ? rawImage
-      : `https://ministry-new.onrender.com${rawImage}`
-    : "https://placehold.co/640x400?text=No+Image";
+  const fullImageUrl =
+    normalizeImageUrl(rawImage) || "https://placehold.co/640x400?text=No+Image";
 
   const snippet = stripHtml(article.body || "").slice(0, 160);
 
@@ -24,6 +22,10 @@ const ArticleCard = ({ article, user, onDelete }) => {
             src={fullImageUrl}
             alt={article.title}
             className="w-full aspect-[4/5] rounded-2xl object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://placehold.co/640x400?text=Image+Unavailable";
+            }}
           />
           <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase text-red-600 shadow">
             {article.category || "General"}

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { normalizeImageUrl } from "../utils/image";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -10,6 +11,9 @@ const FeaturedArticleSection = ({ article }) => {
     article.description ||
     stripHtml(article.body).slice(0, 160) ||
     "A featured story selected for you.";
+  const imageSrc =
+    normalizeImageUrl(article.imageUrl) ||
+    "https://via.placeholder.com/600x300?text=No+Image";
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -29,7 +33,7 @@ const FeaturedArticleSection = ({ article }) => {
       <div className="px-5 pb-5">
         <div className="overflow-hidden rounded-xl bg-gray-100">
           <img
-            src={article.imageUrl}
+            src={imageSrc}
             alt={article.title}
             className="h-52 w-full object-cover"
             onError={(e) => {
