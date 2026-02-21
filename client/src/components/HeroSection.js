@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { normalizeImageUrl } from "../utils/image";
 import { getArticlePath } from "../utils/article";
 
-const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
-
 const formatDate = (value) => {
   const parsed = value ? new Date(value) : null;
   if (!parsed || Number.isNaN(parsed.getTime())) {
