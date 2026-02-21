@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { normalizeImageUrl } from "../utils/image";
+import { getArticlePath } from "../utils/article";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -22,7 +23,7 @@ const FeaturedArticleSection = ({ article }) => {
           Featured
         </span>
         <Link
-          to={`/article/${article._id}`}
+          to={getArticlePath(article)}
           target="_blank"
           className="block text-xl font-bold leading-tight text-slate-900 transition hover:text-red-600"
         >

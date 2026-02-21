@@ -8,5 +8,11 @@
       "destination": "https://www.missd.in/$1",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { normalizeImageUrl } from "../utils/image";
+import { getArticlePath } from "../utils/article";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -51,7 +52,7 @@ const HeroSection = ({ article }) => {
 
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => navigate(`/article/${article._id}`)}
+              onClick={() => navigate(getArticlePath(article))}
               className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
             >
               Read full article

@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const SECRET = 'your_secret_key'; // use env file in production
 const UserSubmission = require('../models/UserSubmission');
 const Article = require('../models/Article');
+const { buildUniqueSlug } = require("../utils/slug");
 
 // Admin login
 router.post('/login', async (req, res) => {
@@ -57,14 +58,16 @@ router.patch('/approve-article/:id', async (req, res) => {
   try {
     const submission = await UserSubmission.findById(req.params.id);
     if (!submission) return res.status(404).json({ msg: 'Submission not found' });
+    const slug = await buildUniqueSlug(Article, submission.title || "article");
 
     // Create new published article
     const newArticle = new Article({
       title: submission.title,
-      content: submission.content,
+      body: submission.content || submission.body || "",
       authorName: submission.authorName,
       location: submission.location,
       authorEmail: submission.authorEmail,
+      slug,
       date: new Date() // optional
     });
     await newArticle.save();

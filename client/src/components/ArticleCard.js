@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { normalizeImageUrl } from "../utils/image";
+import { getArticlePath } from "../utils/article";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -34,7 +35,7 @@ const ArticleCard = ({ article, user, onDelete }) => {
 
         <div className="flex flex-col gap-3 p-4 sm:col-span-3">
           <button
-            onClick={() => navigate(`/article/${article._id}`)}
+            onClick={() => navigate(getArticlePath(article))}
             className="text-left text-lg font-bold leading-tight text-slate-900 transition hover:text-red-600"
           >
             {article.title}

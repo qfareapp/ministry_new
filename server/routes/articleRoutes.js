@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Article = require("../models/Article");
 const UserSubmission = require("../models/UserSubmission");
+const { buildUniqueSlug } = require("../utils/slug");
+
+const isObjectId = (value) => /^[a-f\d]{24}$/i.test(String(value || ""));
 
 // ✅ GET all approved articles
 router.get("/", async (req, res) => {
@@ -14,8 +17,22 @@ router.get("/", async (req, res) => {
 });
 
 // ✅ GET a specific approved article
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const article = await Article.findOne({ slug: req.params.slug });
+    if (!article) return res.status(404).json({ error: "Article not found" });
+    res.json(article);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ GET by Mongo ID
 router.get("/:id", async (req, res) => {
   try {
+    if (!isObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid article ID" });
+    }
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ error: "Article not found" });
     res.json(article);
@@ -28,7 +45,7 @@ router.get("/:id", async (req, res) => {
 // ✅ POST /api/articles – for admin manual publish with hero logic
 router.post("/", async (req, res) => {
   try {
-    const { isHero, isFeatured, ...rest } = req.body;
+    const { isHero, isFeatured, slug: requestedSlug, ...rest } = req.body;
 
 // ✅ Unset previous hero if needed
 if (isHero) {
@@ -40,7 +57,16 @@ if (isFeatured) {
   await Article.updateMany({ isFeatured: true }, { $set: { isFeatured: false } });
 }
 
-const newArticle = new Article({ ...rest, isHero: !!isHero, isFeatured: !!isFeatured });
+const slug =
+  requestedSlug?.trim() ||
+  (await buildUniqueSlug(Article, rest.title || "article"));
+
+const newArticle = new Article({
+  ...rest,
+  slug,
+  isHero: !!isHero,
+  isFeatured: !!isFeatured,
+});
 await newArticle.save();
 res.status(201).json(newArticle);
   } catch (err) {
@@ -73,9 +99,36 @@ router.get("/admin/submitted-articles", async (req, res) => {
 // ✅ PATCH article by ID (for editing published content)
 router.patch("/:id", async (req, res) => {
   try {
+    if (!isObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid article ID" });
+    }
+
+    const existing = await Article.findById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+
+    const updatePayload = { ...req.body };
+    if (typeof updatePayload.slug === "string") {
+      updatePayload.slug = updatePayload.slug.trim();
+      if (updatePayload.slug) {
+        updatePayload.slug = await buildUniqueSlug(
+          Article,
+          updatePayload.slug,
+          req.params.id
+        );
+      }
+    } else if (updatePayload.title && !existing.slug) {
+      updatePayload.slug = await buildUniqueSlug(
+        Article,
+        updatePayload.title,
+        req.params.id
+      );
+    }
+
     const updatedArticle = await Article.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updatePayload,
       { new: true }
     );
     if (!updatedArticle) {

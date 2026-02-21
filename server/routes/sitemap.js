@@ -49,7 +49,7 @@ const mainSitemap = async (req, res) => {
 
     const articles = await Article.find({ status: "Approved" })
       .sort({ date: -1 })
-      .select(["_id", "date", "updatedAt"]);
+      .select(["_id", "slug", "date", "updatedAt"]);
 
     const urls = [
       ...pages.map(
@@ -61,7 +61,8 @@ const mainSitemap = async (req, res) => {
   </url>`
       ),
       ...articles.map((article) => {
-        const loc = `${BASE_URL}/article/${article._id}`;
+        const articlePath = article.slug || article._id;
+        const loc = `${BASE_URL}/article/${articlePath}`;
         const lastmod = formatDate(article.updatedAt || article.date);
         return `
   <url>
@@ -100,7 +101,8 @@ const newsSitemap = async (req, res) => {
 
     const items = articles
       .map((article) => {
-        const loc = `${BASE_URL}/article/${article._id}`;
+        const articlePath = article.slug || article._id;
+        const loc = `${BASE_URL}/article/${articlePath}`;
         const pubDate = formatDate(article.date);
         return `
   <url>

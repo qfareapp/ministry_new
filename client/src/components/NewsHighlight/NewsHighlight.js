@@ -2,6 +2,7 @@ import React from "react";
 import "./NewsHighlight.css";
 import { useNavigate } from "react-router-dom";
 import { normalizeImageUrl } from "../../utils/image";
+import { getArticlePath } from "../../utils/article";
 
 const stripHtml = (value) => value?.replace(/<[^>]+>/g, "") || "";
 
@@ -9,8 +10,8 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
   const navigate = useNavigate();
   if (!mainArticle) return null;
 
-  const handleMainClick = () => navigate(`/article/${mainArticle._id}`);
-  const handleSideClick = (id) => navigate(`/article/${id}`);
+  const handleMainClick = () => navigate(getArticlePath(mainArticle));
+  const handleSideClick = (article) => navigate(getArticlePath(article));
   const mainImageSrc =
     normalizeImageUrl(mainArticle.imageUrl) ||
     "https://via.placeholder.com/600x300?text=No+Image";
@@ -58,7 +59,7 @@ const NewsHighlight = ({ mainArticle, sideArticles }) => {
             <div
               key={article._id}
               className="side-article"
-              onClick={() => handleSideClick(article._id)}
+              onClick={() => handleSideClick(article)}
             >
               <span className="side-article-category">
                 {article.category || "General"}

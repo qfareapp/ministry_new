@@ -51,7 +51,7 @@ function App() {
             <Route path="/" element={<Home user={user} />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/submit" element={<SubmitArticle user={user} setUser={setUser} />} />
-            <Route path="/article/:id" element={<ArticleDetail user={user} />} />
+            <Route path="/article/:articleKey" element={<ArticleDetail user={user} />} />
             <Route path="/about" element={<About />} />
             <Route path="/policy" element={<PolicyPage />} />
             <Route path="/category/:categoryName" element={<CategoryPage />} />

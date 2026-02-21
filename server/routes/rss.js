@@ -22,7 +22,8 @@ router.get("/rss.xml", async (req, res) => {
 
     const items = articles
       .map((article) => {
-        const link = `${BASE_URL}/article/${article._id}`;
+        const articlePath = article.slug || article._id;
+        const link = `${BASE_URL}/article/${articlePath}`;
         const pubDate = new Date(article.date || article.createdAt || Date.now()).toUTCString();
         const summary = stripHtml(article.body).slice(0, 240);
         const description = `${summary}${summary.length === 240 ? "..." : ""}`;

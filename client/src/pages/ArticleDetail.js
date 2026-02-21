@@ -4,11 +4,13 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { FiCopy, FiExternalLink, FiShare2 } from "react-icons/fi";
 import { normalizeImageUrl } from "../utils/image";
+import { getArticlePath } from "../utils/article";
 
 const stripHtml = (value) => (value || "").replace(/<[^>]*>/g, "");
+const isObjectId = (value) => /^[a-f\d]{24}$/i.test(String(value || ""));
 
 const ArticleDetail = ({ user, setUser }) => {
-  const { id } = useParams();
+  const { articleKey } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,7 +24,9 @@ const ArticleDetail = ({ user, setUser }) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
 
-  const articleUrl = `${window.location.origin}/article/${id}`;
+  const articleUrl = `${window.location.origin}${getArticlePath(
+    article || { _id: articleKey }
+  )}`;
 
   const structuredData = useMemo(() => {
     if (!article) return null;
@@ -62,7 +66,7 @@ const ArticleDetail = ({ user, setUser }) => {
   }, [article, articleUrl]);
 
   useEffect(() => {
-    if (!id) {
+    if (!articleKey) {
       setArticle(null);
       setLoading(false);
       return;
@@ -70,7 +74,12 @@ const ArticleDetail = ({ user, setUser }) => {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://ministry-new.onrender.com/api/articles/${id}`);
+        const isId = isObjectId(articleKey);
+        const endpoint = isId
+          ? `https://ministry-new.onrender.com/api/articles/${articleKey}`
+          : `https://ministry-new.onrender.com/api/articles/slug/${encodeURIComponent(articleKey)}`;
+
+        const res = await axios.get(endpoint);
         if (!res.data || Object.keys(res.data).length === 0) {
           setArticle(null);
           setLoading(false);
@@ -78,11 +87,16 @@ const ArticleDetail = ({ user, setUser }) => {
         }
 
         setArticle(res.data);
+        if (res.data.slug && res.data.slug !== articleKey) {
+          navigate(`/article/${res.data.slug}`, { replace: true });
+        }
+
+        const currentArticleId = res.data._id;
         setLikes(res.data.likes || 0);
         setShares(res.data.shares || 0);
 
         const commentRes = await axios.get(
-          `https://ministry-new.onrender.com/api/articles/${id}/comments`
+          `https://ministry-new.onrender.com/api/articles/${currentArticleId}/comments`
         );
         setComments(commentRes.data || []);
 
@@ -91,7 +105,7 @@ const ArticleDetail = ({ user, setUser }) => {
         setHasLiked(Boolean(alreadyLiked));
 
         const allArticles = await axios.get(`https://ministry-new.onrender.com/api/articles`);
-        const others = allArticles.data.filter((a) => a._id !== id);
+        const others = allArticles.data.filter((a) => a._id !== currentArticleId);
         setMoreArticles(others.slice(0, 4));
       } catch (err) {
         console.error("Error loading article:", err);
@@ -106,26 +120,26 @@ const ArticleDetail = ({ user, setUser }) => {
     if (!localStorage.getItem("guestUserId")) {
       localStorage.setItem("guestUserId", "guest-" + Date.now());
     }
-  }, [id, user]);
+  }, [articleKey, user, navigate]);
 
   useEffect(() => {
     if (showShareOptions) {
-      const hasShared = sessionStorage.getItem(`shared-${id}`);
-      if (!hasShared && user) {
+      const hasShared = sessionStorage.getItem(`shared-${article?._id}`);
+      if (!hasShared && user && article?._id) {
         axios
-          .post(`https://ministry-new.onrender.com/api/articles/${id}/share`, {
+          .post(`https://ministry-new.onrender.com/api/articles/${article._id}/share`, {
             userId: user.id,
           })
           .then(() => {
             setShares((prev) => prev + 1);
-            sessionStorage.setItem(`shared-${id}`, "true");
+            sessionStorage.setItem(`shared-${article._id}`, "true");
           })
           .catch((err) => {
             console.error("Error incrementing share count:", err);
           });
       }
     }
-  }, [showShareOptions, id, user]);
+  }, [showShareOptions, article, user]);
 
   const handleLike = async () => {
     if (!user) {
@@ -133,12 +147,13 @@ const ArticleDetail = ({ user, setUser }) => {
       return;
     }
     if (hasLiked) return;
+    if (!article?._id) return;
 
     const userId = user._id || localStorage.getItem("guestUserId");
 
     try {
       const response = await axios.post(
-        `https://ministry-new.onrender.com/api/articles/${id}/like`,
+        `https://ministry-new.onrender.com/api/articles/${article._id}/like`,
         { userId }
       );
       setLikes(response.data.likes);
@@ -154,8 +169,9 @@ const ArticleDetail = ({ user, setUser }) => {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!user || !newComment.trim()) return;
+    if (!article?._id) return;
 
-    const res = await axios.post(`https://ministry-new.onrender.com/api/articles/${id}/comment`, {
+    const res = await axios.post(`https://ministry-new.onrender.com/api/articles/${article._id}/comment`, {
       userId: user.id,
       userName: user.name,
       text: newComment,
@@ -344,7 +360,7 @@ const ArticleDetail = ({ user, setUser }) => {
               <div
                 key={item._id}
                 className="p-4 border rounded hover:shadow cursor-pointer"
-                onClick={() => navigate(`/article/${item._id}`)}
+                onClick={() => navigate(getArticlePath(item))}
               >
                 <p className="text-sm text-red-600 font-bold uppercase">{item.category}</p>
                 <h4 className="text-lg font-semibold mt-1">{item.title}</h4>

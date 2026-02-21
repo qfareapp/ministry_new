@@ -14,6 +14,7 @@ const articleSchema = new mongoose.Schema({
   location: { type: String, default: "" },
   date: { type: Date, default: Date.now },
   category: { type: String, default: "" },
+  slug: { type: String, unique: true, sparse: true, index: true },
   imageUrl: { type: String, default: "" },
   isHero: { type: Boolean, default: false },
   isHighlight: { type: Boolean, default: false },
