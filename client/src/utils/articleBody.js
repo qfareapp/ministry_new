@@ -34,9 +34,22 @@ export const formatArticleBodyHtml = (raw = "") => {
 
   const decodedBody = decodeHtmlEntities(body);
   const hasTags = /<[^>]+>/.test(decodedBody);
-  if (hasTags) return sanitizeHtml(decodedBody);
+  if (hasTags) {
+    const sanitized = sanitizeHtml(decodedBody);
+    const hasBlockTags = /<(p|h1|h2|h3|h4|h5|h6|ul|ol|li|blockquote|div|br)\b/i.test(
+      sanitized
+    );
+    if (hasBlockTags) return sanitized;
 
-  const paragraphs = body
+    return sanitized
+      .split(/\n\s*\n/)
+      .map((para) => para.trim())
+      .filter(Boolean)
+      .map((para) => `<p>${para.replace(/\n/g, "<br />")}</p>`)
+      .join("");
+  }
+
+  const paragraphs = decodedBody
     .split(/\n\s*\n/)
     .map((para) => para.trim())
     .filter(Boolean)
