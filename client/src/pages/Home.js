@@ -121,7 +121,7 @@ const Home = ({ user }) => {
                 More stories are on their way. Check back soon.
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
                 {otherArticles.map((article) => (
                   <ArticleCard
                     key={article._id}

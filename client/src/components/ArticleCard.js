@@ -13,41 +13,30 @@ const ArticleCard = ({ article, user, onDelete }) => {
   const fullImageUrl =
     normalizeImageUrl(rawImage) || "https://placehold.co/640x400?text=No+Image";
 
-  const snippet = stripHtml(article.body || "").slice(0, 160);
+  const snippet = stripHtml(article.body || "").slice(0, 180);
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="grid gap-4 sm:grid-cols-5">
-        <div className="relative sm:col-span-2">
-          <img
-            src={fullImageUrl}
-            alt={article.title}
-            className="w-full aspect-[4/5] rounded-2xl object-cover"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://placehold.co/640x400?text=Image+Unavailable";
-            }}
-          />
-          <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase text-red-600 shadow">
+    <div className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+      <div className="flex items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-red-600">
             {article.category || "General"}
-          </span>
-        </div>
+          </p>
 
-        <div className="flex flex-col gap-3 p-4 sm:col-span-3">
           <button
             onClick={() => navigate(getArticlePath(article))}
-            className="text-left text-lg font-bold leading-tight text-slate-900 transition hover:text-red-600"
+            className="mb-2 text-left text-2xl font-bold leading-tight text-slate-900 transition hover:text-red-600"
           >
             {article.title}
           </button>
 
-          <p className="text-sm text-gray-700 leading-relaxed truncate-lines">
+          <p className="text-sm text-gray-700 leading-relaxed">
             {snippet || "No description available for this story yet."}
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600">
-            <span>{article.likes || 0} likes</span>
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <span>{article.comments?.length || 0} comments</span>
+            <span>{article.likes || 0} likes</span>
             <span>{article.shares || 0} shares</span>
 
             {isAdmin && (
@@ -93,6 +82,18 @@ const ArticleCard = ({ article, user, onDelete }) => {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-lg sm:h-36 sm:w-44">
+          <img
+            src={fullImageUrl}
+            alt={article.title}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://placehold.co/640x400?text=Image+Unavailable";
+            }}
+          />
         </div>
       </div>
     </div>
