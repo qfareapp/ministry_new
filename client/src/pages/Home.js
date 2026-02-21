@@ -122,25 +122,38 @@ const Home = ({ user }) => {
                 More stories are on their way. Check back soon.
               </div>
             ) : (
-              <div className="space-y-4">
-                {otherArticles.map((article, index) =>
-                  (index + 1) % 4 === 0 ? (
-                    <FullImageArticleCard
-                      key={article._id}
-                      article={article}
-                      user={user}
-                      onDelete={handleDelete}
-                    />
-                  ) : (
+              <>
+                <div className="space-y-4 lg:hidden">
+                  {otherArticles.map((article) => (
                     <ArticleCard
                       key={article._id}
                       article={article}
                       user={user}
                       onDelete={handleDelete}
                     />
-                  )
-                )}
-              </div>
+                  ))}
+                </div>
+
+                <div className="hidden space-y-4 lg:block">
+                  {otherArticles.map((article, index) =>
+                    (index + 1) % 4 === 0 ? (
+                      <FullImageArticleCard
+                        key={article._id}
+                        article={article}
+                        user={user}
+                        onDelete={handleDelete}
+                      />
+                    ) : (
+                      <ArticleCard
+                        key={article._id}
+                        article={article}
+                        user={user}
+                        onDelete={handleDelete}
+                      />
+                    )
+                  )}
+                </div>
+              </>
             )}
           </div>
 
