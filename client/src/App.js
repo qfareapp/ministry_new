@@ -14,6 +14,7 @@ import AdminPanel from './pages/AdminPanel';
 import EditSubmission from './pages/EditSubmission';
 import PolicyPage from "./pages/PolicyPage";
 import AdminLogin from './pages/AdminLogin';
+import WestBengalGrowthStory from './pages/WestBengalGrowthStory';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -55,6 +56,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/policy" element={<PolicyPage />} />
             <Route path="/category/:categoryName" element={<CategoryPage />} />
+            <Route path="/wb-growth-story" element={<WestBengalGrowthStory />} />
 
             {/* ✅ Admin-only routes */}
             <Route

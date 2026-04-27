@@ -58,6 +58,15 @@ const Sidebar = ({ isOpen, onClose, user, setUser }) => {
         )}
       </ul>
 
+      {/* WB Growth Story link */}
+      <div
+        onClick={() => { navigate("/wb-growth-story"); if (onClose) onClose(); }}
+        className="flex items-center space-x-3 text-amber-600 hover:text-amber-700 cursor-pointer text-sm font-bold mb-4 px-1 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200"
+      >
+        <span className="text-xl">📊</span>
+        <span>WB Growth Story</span>
+      </div>
+
       {/* ✅ Category List */}
       <ul className="space-y-4">
         {categories.map((cat, index) => (
