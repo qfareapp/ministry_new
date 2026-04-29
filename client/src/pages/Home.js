@@ -5,6 +5,7 @@ import ArticleCard from "../components/ArticleCard";
 import FullImageArticleCard from "../components/FullImageArticleCard";
 import FeaturedArticleSection from "../components/FeaturedArticleSection";
 import NewsHighlight from "../components/NewsHighlight/NewsHighlight";
+import HomepagePoll from "../components/HomepagePoll";
 
 const Home = ({ user }) => {
   const [articles, setArticles] = useState([]);
@@ -69,6 +70,8 @@ const Home = ({ user }) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-amber-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <HomepagePoll />
+
         {heroArticle && <HeroSection article={heroArticle} />}
 
         {categories.length > 0 && (

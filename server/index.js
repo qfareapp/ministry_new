@@ -7,6 +7,7 @@ const path = require("path");
 require("dotenv").config();
 
 const app = express();
+app.set("trust proxy", 1);
 
 // ✅ Prerender.io middleware (only for article preview)
 const prerender = require("prerender-node");
@@ -47,12 +48,14 @@ const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/adminAuth");
 const rssRoutes = require("./routes/rss");
 const sitemapRoutes = require("./routes/sitemap");
+const pollRoutes = require("./routes/pollRoutes");
 
 app.get("/", (req, res) => res.send("✅ API is running"));
 
 app.use("/api/articles", articleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/poll", pollRoutes);
 app.use("/", rssRoutes);
 app.use("/", sitemapRoutes);
 
