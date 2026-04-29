@@ -37,6 +37,7 @@ const buildTrendBuckets = (votes) => {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+        timeZone: "Asia/Kolkata",
       }),
       timestamp: lastVote.createdAt,
       counts: { ...runningCounts },
