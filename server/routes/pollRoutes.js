@@ -15,7 +15,7 @@ const buildTrendBuckets = (votes) => {
     return [];
   }
 
-  const bucketCount = Math.min(6, sortedVotes.length);
+  const bucketCount = Math.min(12, sortedVotes.length);
   const bucketSize = Math.max(1, Math.ceil(sortedVotes.length / bucketCount));
   const runningCounts = POLL_OPTIONS.reduce((acc, option) => {
     acc[option] = 0;
@@ -33,10 +33,12 @@ const buildTrendBuckets = (votes) => {
 
     const lastVote = slice[slice.length - 1];
     trend.push({
-      label: new Date(lastVote.createdAt).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
+      label: new Date(lastVote.createdAt).toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
       }),
+      timestamp: lastVote.createdAt,
       counts: { ...runningCounts },
     });
   }

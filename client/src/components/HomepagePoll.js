@@ -91,27 +91,40 @@ const hashFingerprint = async (value) => {
     .join("");
 };
 
-const buildLinePath = (values, maxValue) => {
-  if (!values.length) return "";
-
+const getChartPoint = (value, index, length, maxValue) => {
   const usableWidth = GRAPH_WIDTH - GRAPH_PADDING * 2;
   const usableHeight = GRAPH_HEIGHT - GRAPH_PADDING * 2;
+  const x =
+    GRAPH_PADDING +
+    (length === 1 ? usableWidth / 2 : (index / (length - 1)) * usableWidth);
+  const y =
+    GRAPH_HEIGHT -
+    GRAPH_PADDING -
+    (maxValue === 0 ? 0 : (value / maxValue) * usableHeight);
 
-  return values
-    .map((value, index) => {
-      const x =
-        GRAPH_PADDING +
-        (values.length === 1
-          ? usableWidth / 2
-          : (index / (values.length - 1)) * usableWidth);
-      const y =
-        GRAPH_HEIGHT -
-        GRAPH_PADDING -
-        (maxValue === 0 ? 0 : (value / maxValue) * usableHeight);
+  return { x, y };
+};
 
-      return `${index === 0 ? "M" : "L"} ${x} ${y}`;
-    })
-    .join(" ");
+const buildSmoothLinePath = (values, maxValue) => {
+  if (!values.length) return "";
+
+  const points = values.map((value, index) =>
+    getChartPoint(value, index, values.length, maxValue)
+  );
+
+  if (points.length === 1) {
+    return `M ${points[0].x} ${points[0].y}`;
+  }
+
+  return points.reduce((path, point, index) => {
+    if (index === 0) {
+      return `M ${point.x} ${point.y}`;
+    }
+
+    const previous = points[index - 1];
+    const controlX = (previous.x + point.x) / 2;
+    return `${path} C ${controlX} ${previous.y}, ${controlX} ${point.y}, ${point.x} ${point.y}`;
+  }, "");
 };
 
 const getPollShareUrl = () => {
@@ -133,6 +146,7 @@ const HomepagePoll = () => {
   const [message, setMessage] = useState("");
   const [justVoted, setJustVoted] = useState(false);
   const [shareMessage, setShareMessage] = useState("");
+  const [chartVersion, setChartVersion] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -158,6 +172,7 @@ const HomepagePoll = () => {
         const response = await axios.get(`${API_ORIGIN}/api/poll/homepage`);
         if (mounted) {
           setResults(response.data);
+          setChartVersion((value) => value + 1);
         }
       } catch {
         if (mounted) {
@@ -195,6 +210,7 @@ const HomepagePoll = () => {
       setStoredVote(choice);
       setSelectedChoice(choice);
       setResults(response.data);
+      setChartVersion((value) => value + 1);
       setJustVoted(true);
       setMessage("Your vote has been counted!");
     } catch (error) {
@@ -206,6 +222,7 @@ const HomepagePoll = () => {
 
       if (error.response?.data?.counts) {
         setResults(error.response.data);
+        setChartVersion((value) => value + 1);
       }
 
       setMessage(error.response?.data?.error || "We could not record your vote.");
@@ -474,7 +491,7 @@ const HomepagePoll = () => {
             }}
           >
             <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
-              Vote Trend
+              Market Trend
             </p>
 
             <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1.5">
@@ -497,6 +514,22 @@ const HomepagePoll = () => {
                   role="img"
                   aria-label="Line graph showing vote trends over time"
                 >
+                  <defs>
+                    {POLL_OPTIONS.map((option) => (
+                      <linearGradient
+                        key={`${option.label}-gradient`}
+                        id={`trend-gradient-${option.label.replace(/[^a-z0-9]/gi, "").toLowerCase()}`}
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                      >
+                        <stop offset="0%" stopColor={option.stroke} stopOpacity="0.45" />
+                        <stop offset="60%" stopColor={option.stroke} stopOpacity="1" />
+                        <stop offset="100%" stopColor="#ffffff" stopOpacity="0.95" />
+                      </linearGradient>
+                    ))}
+                  </defs>
                   {[0, 1, 2, 3].map((line) => {
                     const y =
                       GRAPH_PADDING +
@@ -519,25 +552,62 @@ const HomepagePoll = () => {
                     const values = trend.map(
                       (point) => point.counts?.[option.label] || 0
                     );
-                    const path = buildLinePath(values, trendMax);
+                    const path = buildSmoothLinePath(values, trendMax);
+                    const lastValue = values[values.length - 1] || 0;
+                    const lastPoint = getChartPoint(
+                      lastValue,
+                      values.length - 1,
+                      values.length,
+                      trendMax
+                    );
+                    const gradientId = `trend-gradient-${option.label
+                      .replace(/[^a-z0-9]/gi, "")
+                      .toLowerCase()}`;
 
                     return (
-                      <path
-                        key={option.label}
-                        d={path}
-                        fill="none"
-                        stroke={option.stroke}
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        opacity="0.9"
-                      />
+                      <g key={`${option.label}-${chartVersion}`}>
+                        <path
+                          d={path}
+                          fill="none"
+                          stroke={option.stroke}
+                          strokeWidth="6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          opacity="0.12"
+                        />
+                        <path
+                          d={path}
+                          fill="none"
+                          stroke={`url(#${gradientId})`}
+                          strokeWidth="2.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          opacity="0.98"
+                          className="animate-[pulse_2.8s_ease-in-out_infinite]"
+                        />
+                        <circle
+                          cx={lastPoint.x}
+                          cy={lastPoint.y}
+                          r="3.5"
+                          fill={option.stroke}
+                        />
+                        <circle
+                          cx={lastPoint.x}
+                          cy={lastPoint.y}
+                          r="8"
+                          fill={option.stroke}
+                          opacity="0.18"
+                          className="animate-ping"
+                        />
+                      </g>
                     );
                   })}
                 </svg>
-                <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600">
+                <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-slate-500">
                   {trend.map((point, index) => (
-                    <span key={`${point.label}-${index}`}>{point.label}</span>
+                    <span key={`${point.label}-${index}`} className="tabular-nums">
+                      {point.label}
+                    </span>
                   ))}
                 </div>
               </div>
